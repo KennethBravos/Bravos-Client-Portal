@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Bravos Lending – Client Portal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #f6f4ef;
+      --card: #fff;
+      --tx: #1d2320;
+      --mu: #68716c;
+      --ln: #e3e0d8;
+      --ac: #1f6f5c;
+      --bad: #b3392f;
+      --warn: #b9791a;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #121614;
+        --card: #1b211e;
+        --tx: #e8ece9;
+        --mu: #93a09a;
+        --ln: #2b332f;
+        --ac: #4fb59a;
+        --bad: #e5776d;
+        --warn: #e0a547;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #121614;
+      --card: #1b211e;
+      --tx: #e8ece9;
+      --mu: #93a09a;
+      --ln: #2b332f;
+      --ac: #4fb59a;
+      --bad: #e5776d;
+      --warn: #e0a547;
+    }
+
+    html {
+      scroll-padding-top: env(safe-area-inset-top, 0px);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--tx);
+      font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    main {
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px 16px;
+      flex: 1;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      color: var(--mu);
+      font-size: 14px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--ln);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      font-size: 18px;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .card-subtitle {
+      color: var(--mu);
+      font-size: 13px;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--mu);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    input,
+    select,
+    textarea {
+      font: inherit;
+      color: var(--tx);
+      background: var(--bg);
+      border: 1px solid var(--ln);
+      border-radius: 8px;
+      padding: 10px 12px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--ac);
+      box-shadow: 0 0 0 2px rgba(31, 111, 92, 0.1);
+    }
+
+    button {
+      font: inherit;
+      color: var(--tx);
+      background: var(--bg);
+      border: 1px solid var(--ln);
+      border-radius: 8px;
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      background: var(--ln);
+    }
+
+    button.primary {
+      background: var(--ac);
+      color: #fff;
+      border-color: var(--ac);
+      width: 100%;
+    }
+
+    button.primary:hover {
+      opacity: 0.9;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--ln);
+    }
+
+    .tab-button {
+      padding: 12px 16px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--mu);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .tab-button.active {
+      border-bottom-color: var(--ac);
+      color: var(--ac);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .error {
+      color: var(--bad);
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .success {
+      color: var(--ac);
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .row > * {
+      flex: 1;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--ln);
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      color: var(--mu);
+      font-size: 13px;
+    }
+
+    .info-value {
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .progress-bar {
+      height: 8px;
+      border-radius: 4px;
+      background: var(--ln);
+      overflow: hidden;
+      margin: 12px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--ac);
+      width: 0%;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid;
+    }
+
+    .status-current {
+      background: rgba(31, 111, 92, 0.1);
+      border-color: var(--ac);
+      color: var(--ac);
+    }
+
+    .status-overdue {
+      background: rgba(179, 57, 47, 0.1);
+      border-color: var(--bad);
+      color: var(--bad);
+    }
+
+    .status-watch {
+      background: rgba(185, 121, 26, 0.1);
+      border-color: var(--warn);
+      color: var(--warn);
+    }
+
+    .status-paid {
+      background: rgba(31, 111, 92, 0.1);
+      border-color: var(--ac);
+      color: var(--ac);
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    .table th,
+    .table td {
+      padding: 8px;
+      border-bottom: 1px solid var(--ln);
+      text-align: right;
+    }
+
+    .table th:first-child,
+    .table td:first-child {
+      text-align: left;
+    }
+
+    .table th {
+      color: var(--mu);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 24px 16px;
+      color: var(--mu);
+      font-size: 13px;
+      border-top: 1px solid var(--ln);
+      margin-top: 40px;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="header">
+      <h1>Bravos Lending</h1>
+      <p class="subtitle">Client Portal – Check your loan, calculate payments, or apply</p>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-button active" onclick="switchTab('loan')">My Loan</button>
+      <button class="tab-button" onclick="switchTab('calculator')">Calculator</button>
+      <button class="tab-button" onclick="switchTab('apply')">Apply / Ask</button>
+    </div>
+
+    <!-- Loan Section -->
+    <section id="loan" class="section active">
+      <div class="card">
+        <h2>Check My Loan</h2>
+        <p class="card-subtitle">Enter your private access code to view your loan details. Your information is encrypted and secure.</p>
+
+        <div class="form-group">
+          <label>Access Code</label>
+          <div class="row">
+            <input type="text" id="accessCode" placeholder="e.g. K7QM4D2X" autocomplete="off" style="text-transform: uppercase;">
+            <button class="primary" onclick="viewLoan()" style="flex: 0 0 auto; width: auto; padding: 10px 24px;">View</button>
+          </div>
+          <div id="loanError" class="error"></div>
+        </div>
+      </div>
+
+      <div id="loanOutput"></div>
+    </section>
+
+    <!-- Calculator Section -->
+    <section id="calculator" class="section">
+      <div class="card">
+        <h2>Loan Calculator</h2>
+        <p class="card-subtitle">Estimate your monthly payments and total interest.</p>
+
+        <div class="form-group">
+          <label>Amount You Need (₱)</label>
+          <input type="number" id="calcAmount" min="1000" step="500" value="10000" oninput="updateCalculation()">
+        </div>
+
+        <div class="form-group">
+          <label>Loan Term</label>
+          <select id="calcTerm" onchange="updateCalculation()">
+            <option value="2">2 months</option>
+            <option value="3" selected>3 months</option>
+            <option value="4">4 months</option>
+            <option value="6">6 months</option>
+            <option value="12">12 months</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>First Payment Date</label>
+          <input type="date" id="calcFirstDate" oninput="updateCalculation()">
+        </div>
+
+        <div id="calcResults" style="margin-top: 20px;"></div>
+
+        <p class="card-subtitle" style="margin-top: 20px; color: var(--mu);">
+          <strong>Note:</strong> Estimate only. Rate shown is our standard 6% per month (flat) plus a one-time processing fee. Interest is charged per day, so the first payment date affects the final amount. Subsequent payments are due every 15 days.
+        </p>
+      </div>
+    </section>
+
+    <!-- Apply Section -->
+    <section id="apply" class="section">
+      <div class="card">
+        <h2>Apply or Ask a Question</h2>
+        <p class="card-subtitle">Fill out the form below and we'll get back to you within 24 hours.</p>
+
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" id="applyName" placeholder="Full name">
+        </div>
+
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="tel" id="applyPhone" placeholder="+63 999 123 4567" inputmode="tel">
+        </div>
+
+        <div class="form-group">
+          <label>Town / City</label>
+          <input type="text" id="applyCity" placeholder="e.g. Tagbilaran City">
+        </div>
+
+        <div class="form-group">
+          <label>Amount You Need (₱)</label>
+          <input type="number" id="applyAmount" min="0" placeholder="Leave blank if asking a question">
+        </div>
+
+        <div class="form-group">
+          <label>Preferred Term</label>
+          <select id="applyTerm">
+            <option>2 months</option>
+            <option selected>3 months</option>
+            <option>4 months</option>
+            <option>6 months</option>
+            <option>12 months</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Message / Purpose</label>
+          <textarea id="applyMessage" rows="4" placeholder="Tell us about your loan purpose or question..."></textarea>
+        </div>
+
+        <button class="primary" onclick="copyInquiry()">Copy Inquiry to Clipboard</button>
+        <div id="applyStatus"></div>
+
+        <p class="card-subtitle" style="margin-top: 16px;">
+          We will reply to the number you provide. Please do not include passwords or bank PINs.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Bravos Lending · Bohol, Philippines</p>
+  </footer>
+
+  <script>
+    // Encrypted loan data (from original)
+    const BL = {
+      "143f6f251489931d7005": {
+        "s": "Nhk07Lw2EP3/M/2vHOtXYQ==",
+        "i": "pnvR2MkA5DpyvVkM",
+        "c": "hnOJObTJ7ysX9eAHsi2wgR7Lcc+59TDzuR2KWCkTExWAu6GsJh2eNb1qO6dm8gJtQObwuNn5T1dCrsS8WNXs+sqPS4RfPUZhx/wWiPq8Od3OrtOvsKCYk8Z1vhhBuNoE63o9cfvataZ6vlX2DXARbhjT1OFRY5OZ3ZF09lvV7uAnRNFI/NmSn+yA6RptuSpySQu/8fzLhIDy1+aqAmdZ/twEiTkB/olajwAYJmjFUIkR5BAU/vlQPue16jjAlwyPL/NanJ9BEK0f9OMXCacd4jxXB/ELCB1Bq64Ox7RF5t1xcy8/YN5e534ZY1OQiznbYmbsXDDikJrftRId8NJdkNxRRbTIkIm6a7490xgdy7lRTwwWPHHHiiguaDwFgTgvodg1y1zL7jZX3sY0itODPw=="
+      }
+    };
+
+    const ASOF = "4 Oct 2026";
+    const RATE = 6;
+
+    function $(id) {
+      return document.getElementById(id);
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+      
+      $(`${tabName}`).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // Utility functions
+    const P = (n) => '₱' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    const P2 = (n) => '₱' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const E = (s) => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const b64 = (s) => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+    const hex = (b) => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
+
+    // Crypto function to decrypt loan data
+    async function viewLoan() {
+      const code = $('accessCode').value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      $('loanError').textContent = '';
+      $('loanOutput').innerHTML = '';
+
+      if (code.length < 6) {
+        $('loanError').textContent = 'Please enter your full access code.';
+        return;
+      }
+
+      try {
+        const id = hex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode('id:' + code))).slice(0, 20);
+        const bl = BL[id];
+        
+        if (!bl) throw new Error('Invalid code');
+
+        const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(code), 'PBKDF2', false, ['deriveKey']);
+        const key = await crypto.subtle.deriveKey(
+          { name: 'PBKDF2', salt: b64(bl.s), iterations: 150000, hash: 'SHA-256' },
+          km,
+          { name: 'AES-GCM', length: 256 },
+          false,
+          ['decrypt']
+        );
+        const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(bl.i) }, key, b64(bl.c));
+        const data = JSON.parse(new TextDecoder().decode(pt));
+        showLoan(data);
+      } catch (e) {
+        $('loanError').textContent = 'Code not recognized. Please check it or contact us.';
+      }
+    }
+
+    function showLoan(data) {
+      let html = `
+        <div class="card">
+          <h2>Hello, ${E(data.name)}</h2>
+          <p class="card-subtitle">Statement as of ${E(ASOF)}. Payments made after this date may not appear yet.</p>
+        </div>
+      `;
+
+      data.loans.forEach((loan, idx) => {
+        const pct = Math.min(100, Math.round(loan.paid / loan.total * 100));
+        const statusClass = `status-${loan.st.toLowerCase()}`;
+        const statusText = loan.st === 'Watch' ? 'Payment Due' : loan.st;
+
+        html += `
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <h2>${E(loan.label)}</h2>
+              <span class="status-badge ${statusClass}">${statusText}</span>
+            </div>
+            <p class="card-subtitle">Released ${E(loan.date)} · ${loan.months} months · ${E(loan.rate)}% / month</p>
+
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${pct}%"></div>
+            </div>
+            <p class="card-subtitle" style="margin: 4px 0 12px 0;">${pct}% paid</p>
+
+            <div class="info-row">
+              <span class="info-label">Amount Financed</span>
+              <span class="info-value">${P(loan.fin)}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Total Payable</span>
+              <span class="info-value">${P(loan.total)}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Bi-weekly Installment</span>
+              <span class="info-value">${P(loan.inst)}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Paid So Far</span>
+              <span class="info-value">${P(loan.paid)}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Remaining Balance</span>
+              <span class="info-value">${P(loan.out)}</span>
+            </div>
+            ${loan.od > 0 ? `
+            <div class="info-row" style="color: var(--bad);">
+              <span class="info-label">Amount Past Due</span>
+              <span class="info-value">${P(loan.od)}</span>
+            </div>
+            ` : ''}
+            ${loan.up && loan.up.length ? `
+            <div class="info-row">
+              <span class="info-label">Next Due Dates</span>
+              <span class="info-value">${loan.up.map(E).join('<br>')}</span>
+            </div>
+            ` : ''}
+          </div>
+        `;
+      });
+
+      html += `
+        <div class="card">
+          <p class="card-subtitle">Questions about your statement? Contact us and mention your name. Please settle any past-due amount as soon as possible.</p>
+        </div>
+      `;
+
+      $('loanOutput').innerHTML = html;
+    }
+
+    // Calculator functions
+    function updateCalculation() {
+      const amount = +$('calcAmount').value || 0;
+      const term = +$('calcTerm').value || 3;
+      const firstDate = $('calcFirstDate').value;
+
+      if (amount < 500) {
+        $('calcResults').innerHTML = '';
+        return;
+      }
+
+      const today = new Date().toISOString().slice(0, 10);
+      if (!firstDate) {
+        const d = new Date();
+        d.setDate(d.getDate() + 15);
+        $('calcFirstDate').value = d.toISOString().slice(0, 10);
+      }
+
+      const fee = amount < 5000 ? 75 : amount < 10000 ? 120 : 150;
+      const financed = amount + fee;
+      const numPayments = term * 2;
+      const perPayment = financed / numPayments;
+      const dailyRate = (financed * RATE / 100) / 30;
+
+      const firstPaymentDate = $('calcFirstDate').value || today;
+      const daysToFirst = Math.max(1, Math.round((new Date(firstPaymentDate) - new Date(today)) / 86400000));
+
+      let rows = '';
+      let totalRepay = 0;
+      let firstAmt = 0;
+
+      for (let i = 1; i <= numPayments; i++) {
+        const days = i === 1 ? daysToFirst : 15;
+        const amt = perPayment + (dailyRate * days);
+        const payDate = new Date(firstPaymentDate);
+        if (i > 1) payDate.setDate(payDate.getDate() + (15 * (i - 1)));
+        
+        if (i === 1) firstAmt = amt;
+        totalRepay += amt;
+
+        rows += `
+          <tr>
+            <td>${i}</td>
+            <td>${payDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+            <td style="text-align: right;">${P2(amt)}</td>
+          </tr>
+        `;
+      }
+
+      const totalInterest = totalRepay - financed;
+
+      $('calcResults').innerHTML = `
+        <div class="info-row">
+          <span class="info-label">Cash You Receive</span>
+          <span class="info-value">${P(amount)}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Processing Fee</span>
+          <span class="info-value">${P(fee)}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Amount Financed</span>
+          <span class="info-value">${P(financed)}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Total Interest</span>
+          <span class="info-value">${P(totalInterest)}</span>
+        </div>
+        <div class="info-row" style="border-bottom: 2px solid var(--ln);">
+          <span class="info-label" style="font-weight: 600;">Total to Repay</span>
+          <span class="info-value" style="font-weight: 600; font-size: 18px;">${P(totalRepay)}</span>
+        </div>
+        <div class="info-row" style="padding: 12px 0 0 0; margin-top: 12px;">
+          <span class="info-label">First Payment</span>
+          <span class="info-value">${P2(firstAmt)}</span>
+        </div>
+
+        <table class="table" style="margin-top: 16px;">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Due Date</th>
+              <th style="text-align: right;">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
+    }
+
+    // Apply/Inquiry functions
+    function getInquiryText() {
+      const name = $('applyName').value;
+      const phone = $('applyPhone').value;
+      const city = $('applyCity').value;
+      const amount = $('applyAmount').value;
+      const term = $('applyTerm').value;
+      const message = $('applyMessage').value;
+
+      return `Loan Inquiry – Bravos Lending
+Name: ${name}
+Mobile: ${phone}
+Location: ${city}
+Amount: ${amount ? P(amount) : '(not specified)'}
+Term: ${term}
+Message: ${message}`;
+    }
+
+    async function copyInquiry() {
+      const name = $('applyName').value.trim();
+      const phone = $('applyPhone').value.trim();
+
+      if (!name || !phone) {
+        $('applyStatus').innerHTML = '<div class="error">Please enter your name and mobile number.</div>';
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(getInquiryText());
+        $('applyStatus').innerHTML = '<div class="success">✓ Copied! Paste it in a message to us.</div>';
+      } catch (e) {
+        $('applyStatus').innerHTML = '<div class="error">Copy failed. Please select and copy manually.</div>';
+      }
+    }
+
+    // Initialize calculator date
+    window.addEventListener('DOMContentLoaded', () => {
+      const today = new Date();
+      today.setDate(today.getDate() + 15);
+      $('calcFirstDate').valueAsDate = today;
+    });
+  </script>
+</body>
+</html>
