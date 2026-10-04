@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Bravos Lending — Client Portal</title>
+  <title>Bravos Lending &#8212; Client Portal</title>
   <style>
     * {
       margin: 0;
@@ -326,7 +326,7 @@
   <main>
     <div class="header">
       <h1>Bravos Lending</h1>
-      <p class="subtitle">Client Portal • Check your loan, calculate payments, or apply</p>
+      <p class="subtitle">Client Portal &bull; Check your loan, calculate payments, or apply</p>
     </div>
 
     <div class="tabs">
@@ -361,7 +361,7 @@
         <p class="card-subtitle">Estimate your monthly payments and total interest.</p>
 
         <div class="form-group">
-          <label>Amount You Need (₱)</label>
+          <label>Amount You Need (&#8369;)</label>
           <input type="number" id="calcAmount" min="1000" step="500" value="10000" oninput="updateCalculation()">
         </div>
 
@@ -411,7 +411,7 @@
         </div>
 
         <div class="form-group">
-          <label>Amount You Need (₱)</label>
+          <label>Amount You Need (&#8369;)</label>
           <input type="number" id="applyAmount" min="0" placeholder="Leave blank if asking a question">
         </div>
 
@@ -442,7 +442,7 @@
   </main>
 
   <footer class="footer">
-    <p>Bravos Lending • Bohol, Philippines</p>
+    <p>Bravos Lending &bull; Bohol, Philippines</p>
   </footer>
 
   <script>
@@ -459,15 +459,29 @@
       document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
       
       $(`${tabName}`).classList.add('active');
-      if (event && event.target) {
-        event.target.classList.add('active');
+      if (window.event && window.event.target) {
+        window.event.target.classList.add('active');
       }
     }
 
-    // Utility functions
-    const P = (n) => '₱' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-    const P2 = (n) => '₱' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const E = (s) => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    // Sanitize string and clean question mark encoding artifacts from Apps Script
+    const cleanText = (str) => {
+      if (!str) return '';
+      return String(str)
+        .replace(/\?/g, '•')
+        .replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    };
+
+    // Currency formatting using standard unicode escaping (\u20B1 = ₱)
+    const P = (n) => {
+      if (typeof n === 'string') n = n.replace(/[^0-9.-]/g, '');
+      return '\u20B1' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    };
+
+    const P2 = (n) => {
+      if (typeof n === 'string') n = n.replace(/[^0-9.-]/g, '');
+      return '\u20B1' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
 
     // Fetch loan data dynamically from Google Apps Script
     async function viewLoan() {
@@ -496,23 +510,23 @@
     function showLoan(data) {
       let html = `
         <div class="card">
-          <h2>Hello, ${E(data.name)}</h2>
-          <p class="card-subtitle">Statement as of ${E(ASOF)}. Payments made after this date may not appear yet.</p>
+          <h2>Hello, ${cleanText(data.name)}</h2>
+          <p class="card-subtitle">Statement as of ${cleanText(ASOF)}. Payments made after this date may not appear yet.</p>
         </div>
       `;
 
       data.loans.forEach((loan) => {
         const pct = Math.min(100, Math.round(loan.paid / loan.total * 100));
-        const statusClass = `status-${loan.st.toLowerCase()}`;
+        const statusClass = `status-${String(loan.st).toLowerCase()}`;
         const statusText = loan.st === 'Watch' ? 'Payment Due' : loan.st;
 
         html += `
           <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <h2>${E(loan.label)}</h2>
-              <span class="status-badge ${statusClass}">${statusText}</span>
+              <h2>${cleanText(loan.label)}</h2>
+              <span class="status-badge ${statusClass}">${cleanText(statusText)}</span>
             </div>
-            <p class="card-subtitle">Released ${E(loan.date)} • ${loan.months} months • ${E(loan.rate)}% / month</p>
+            <p class="card-subtitle">Released ${cleanText(loan.date)} &bull; ${loan.months} months &bull; ${cleanText(loan.rate)}% / month</p>
 
             <div class="progress-bar">
               <div class="progress-fill" style="width: ${pct}%"></div>
@@ -548,7 +562,7 @@
             ${loan.up && loan.up.length ? `
             <div class="info-row">
               <span class="info-label">Next Due Dates</span>
-              <span class="info-value">${loan.up.map(E).join('<br>')}</span>
+              <span class="info-value">${loan.up.map(cleanText).join('<br>')}</span>
             </div>
             ` : ''}
           </div>
@@ -665,13 +679,7 @@
       const term = $('applyTerm').value;
       const message = $('applyMessage').value;
 
-      return `Loan Inquiry • Bravos Lending
-Name: ${name}
-Mobile: ${phone}
-Location: ${city}
-Amount: ${amount ? P(amount) : '(not specified)'}
-Term: ${term}
-Message: ${message}`;
+      return `Loan Inquiry \u2022 Bravos Lending\nName: ${name}\nMobile: ${phone}\nLocation: ${city}\nAmount: ${amount ? P(amount) : '(not specified)'}\nTerm: ${term}\nMessage: ${message}`;
     }
 
     async function copyInquiry() {
@@ -685,7 +693,7 @@ Message: ${message}`;
 
       try {
         await navigator.clipboard.writeText(getInquiryText());
-        $('applyStatus').innerHTML = '<div class="success">✓ Copied! Paste it in a message to us.</div>';
+        $('applyStatus').innerHTML = '<div class="success">\u2713 Copied! Paste it in a message to us.</div>';
       } catch (e) {
         $('applyStatus').innerHTML = '<div class="error">Copy failed. Please select and copy manually.</div>';
       }
