@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Bravos Lending – Client Portal</title>
+  <title>Bravos Lending ? Client Portal</title>
   <style>
     * {
       margin: 0;
@@ -326,7 +326,7 @@
   <main>
     <div class="header">
       <h1>Bravos Lending</h1>
-      <p class="subtitle">Client Portal – Check your loan, calculate payments, or apply</p>
+      <p class="subtitle">Client Portal ? Check your loan, calculate payments, or apply</p>
     </div>
 
     <div class="tabs">
@@ -361,7 +361,7 @@
         <p class="card-subtitle">Estimate your monthly payments and total interest.</p>
 
         <div class="form-group">
-          <label>Amount You Need (₱)</label>
+          <label>Amount You Need (?)</label>
           <input type="number" id="calcAmount" min="1000" step="500" value="10000" oninput="updateCalculation()">
         </div>
 
@@ -411,7 +411,7 @@
         </div>
 
         <div class="form-group">
-          <label>Amount You Need (₱)</label>
+          <label>Amount You Need (?)</label>
           <input type="number" id="applyAmount" min="0" placeholder="Leave blank if asking a question">
         </div>
 
@@ -442,18 +442,18 @@
   </main>
 
   <footer class="footer">
-    <p>Bravos Lending · Bohol, Philippines</p>
+    <p>Bravos Lending ? Bohol, Philippines</p>
   </footer>
 
   <script>
     // Encrypted loan data (from original)
     const BL = {
-      "143f6f251489931d7005": {
-        "s": "Nhk07Lw2EP3/M/2vHOtXYQ==",
-        "i": "pnvR2MkA5DpyvVkM",
-        "c": "hnOJObTJ7ysX9eAHsi2wgR7Lcc+59TDzuR2KWCkTExWAu6GsJh2eNb1qO6dm8gJtQObwuNn5T1dCrsS8WNXs+sqPS4RfPUZhx/wWiPq8Od3OrtOvsKCYk8Z1vhhBuNoE63o9cfvataZ6vlX2DXARbhjT1OFRY5OZ3ZF09lvV7uAnRNFI/NmSn+yA6RptuSpySQu/8fzLhIDy1+aqAmdZ/twEiTkB/olajwAYJmjFUIkR5BAU/vlQPue16jjAlwyPL/NanJ9BEK0f9OMXCacd4jxXB/ELCB1Bq64Ox7RF5t1xcy8/YN5e534ZY1OQiznbYmbsXDDikJrftRId8NJdkNxRRbTIkIm6a7490xgdy7lRTwwWPHHHiiguaDwFgTgvodg1y1zL7jZX3sY0itODPw=="
-      }
-    };
+  "143f6f251489931d7005": {
+    "s": "Nhk07Lw2EP3/M/2vHOtXYQ==",
+    "i": "pnvR2MkA5DpyvVkM",
+    "c": "hnOJObTJ7ysX9eAHsi2wgR7Lcc+59TDzuR2KWCkTExWAu6GsJh2eNb1qO6dm8gJtQObwuNn5T1dCrsS8WNXs+sqPS4RfPUZhx/wWiPq8Od3OrtOvsKCYk8Z1vhhBuNoE63o9cfvataZ6vlX2DXARbhjT1OFRY5OZ3ZF09lvV7uAnRNFI/NmSn+yA6RptuSpySQu/8fzLhIDy1+aqAmdZ/twEiTkB/olajwAYJmjFUIkR5BAU/vlQPue16jjAlwyPL/NanJ9BEK0f9OMXCacd4jxXB/ELCB1Bq64Ox7RF5t1xcy8/YN5e534ZY1OQiznbYmbsXDDikJrftRId8NJdkNxRRbTIkIm6a7490xgdy7lRTwwWPHHHiiguaDwFgTgvodg1y1zL7jZX3sY0itODPw=="
+  }
+};
 
     const ASOF = "4 Oct 2026";
     const RATE = 6;
@@ -471,8 +471,8 @@
     }
 
     // Utility functions
-    const P = (n) => '₱' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-    const P2 = (n) => '₱' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const P = (n) => '?' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    const P2 = (n) => '?' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const E = (s) => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const b64 = (s) => Uint8Array.from(atob(s), c => c.charCodeAt(0));
     const hex = (b) => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
@@ -529,7 +529,7 @@
               <h2>${E(loan.label)}</h2>
               <span class="status-badge ${statusClass}">${statusText}</span>
             </div>
-            <p class="card-subtitle">Released ${E(loan.date)} · ${loan.months} months · ${E(loan.rate)}% / month</p>
+            <p class="card-subtitle">Released ${E(loan.date)} ? ${loan.months} months ? ${E(loan.rate)}% / month</p>
 
             <div class="progress-bar">
               <div class="progress-fill" style="width: ${pct}%"></div>
@@ -682,7 +682,7 @@
       const term = $('applyTerm').value;
       const message = $('applyMessage').value;
 
-      return `Loan Inquiry – Bravos Lending
+      return `Loan Inquiry ? Bravos Lending
 Name: ${name}
 Mobile: ${phone}
 Location: ${city}
@@ -702,7 +702,7 @@ Message: ${message}`;
 
       try {
         await navigator.clipboard.writeText(getInquiryText());
-        $('applyStatus').innerHTML = '<div class="success">✓ Copied! Paste it in a message to us.</div>';
+        $('applyStatus').innerHTML = '<div class="success">? Copied! Paste it in a message to us.</div>';
       } catch (e) {
         $('applyStatus').innerHTML = '<div class="error">Copy failed. Please select and copy manually.</div>';
       }
