@@ -1,711 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Bravos Lending &#8212; Client Portal</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --bg: #f6f4ef;
-      --card: #fff;
-      --tx: #1d2320;
-      --mu: #68716c;
-      --ln: #e3e0d8;
-      --ac: #1f6f5c;
-      --bad: #b3392f;
-      --warn: #b9791a;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) {
-        --bg: #121614;
-        --card: #1b211e;
-        --tx: #e8ece9;
-        --mu: #93a09a;
-        --ln: #2b332f;
-        --ac: #4fb59a;
-        --bad: #e5776d;
-        --warn: #e0a547;
-      }
-    }
-
-    :root[data-theme="dark"] {
-      --bg: #121614;
-      --card: #1b211e;
-      --tx: #e8ece9;
-      --mu: #93a09a;
-      --ln: #2b332f;
-      --ac: #4fb59a;
-      --bad: #e5776d;
-      --warn: #e0a547;
-    }
-
-    html {
-      scroll-padding-top: env(safe-area-inset-top, 0px);
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--tx);
-      font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    main {
-      max-width: 720px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 20px 16px;
-      flex: 1;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    h1 {
-      font-size: 28px;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-
-    .subtitle {
-      color: var(--mu);
-      font-size: 14px;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--ln);
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 16px;
-    }
-
-    .card h2 {
-      font-size: 18px;
-      margin-bottom: 12px;
-      font-weight: 600;
-    }
-
-    .card-subtitle {
-      color: var(--mu);
-      font-size: 13px;
-      margin-bottom: 16px;
-      line-height: 1.5;
-    }
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    label {
-      display: block;
-      font-size: 12px;
-      color: var(--mu);
-      margin-bottom: 6px;
-      font-weight: 500;
-    }
-
-    input,
-    select,
-    textarea {
-      font: inherit;
-      color: var(--tx);
-      background: var(--bg);
-      border: 1px solid var(--ln);
-      border-radius: 8px;
-      padding: 10px 12px;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-      outline: none;
-      border-color: var(--ac);
-      box-shadow: 0 0 0 2px rgba(31, 111, 92, 0.1);
-    }
-
-    button {
-      font: inherit;
-      color: var(--tx);
-      background: var(--bg);
-      border: 1px solid var(--ln);
-      border-radius: 8px;
-      padding: 10px 16px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    button:hover {
-      background: var(--ln);
-    }
-
-    button.primary {
-      background: var(--ac);
-      color: #fff;
-      border-color: var(--ac);
-      width: 100%;
-    }
-
-    button.primary:hover {
-      opacity: 0.9;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 24px;
-      border-bottom: 1px solid var(--ln);
-    }
-
-    .tab-button {
-      padding: 12px 16px;
-      background: none;
-      border: none;
-      border-bottom: 2px solid transparent;
-      color: var(--mu);
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-
-    .tab-button.active {
-      border-bottom-color: var(--ac);
-      color: var(--ac);
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .error {
-      color: var(--bad);
-      font-size: 13px;
-      margin-top: 8px;
-    }
-
-    .success {
-      color: var(--ac);
-      font-size: 13px;
-      margin-top: 8px;
-    }
-
-    .row {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .row > * {
-      flex: 1;
-    }
-
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--ln);
-    }
-
-    .info-row:last-child {
-      border-bottom: none;
-    }
-
-    .info-label {
-      color: var(--mu);
-      font-size: 13px;
-    }
-
-    .info-value {
-      font-weight: 600;
-      text-align: right;
-    }
-
-    .progress-bar {
-      height: 8px;
-      border-radius: 4px;
-      background: var(--ln);
-      overflow: hidden;
-      margin: 12px 0;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: var(--ac);
-      width: 0%;
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 16px;
-      font-size: 12px;
-      font-weight: 600;
-      border: 1px solid;
-    }
-
-    .status-current {
-      background: rgba(31, 111, 92, 0.1);
-      border-color: var(--ac);
-      color: var(--ac);
-    }
-
-    .status-overdue {
-      background: rgba(179, 57, 47, 0.1);
-      border-color: var(--bad);
-      color: var(--bad);
-    }
-
-    .status-watch {
-      background: rgba(185, 121, 26, 0.1);
-      border-color: var(--warn);
-      color: var(--warn);
-    }
-
-    .status-paid {
-      background: rgba(31, 111, 92, 0.1);
-      border-color: var(--ac);
-      color: var(--ac);
-    }
-
-    .table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 12px;
-    }
-
-    .table th,
-    .table td {
-      padding: 8px;
-      border-bottom: 1px solid var(--ln);
-      text-align: right;
-    }
-
-    .table th:first-child,
-    .table td:first-child {
-      text-align: left;
-    }
-
-    .table th {
-      color: var(--mu);
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .footer {
-      text-align: center;
-      padding: 24px 16px;
-      color: var(--mu);
-      font-size: 13px;
-      border-top: 1px solid var(--ln);
-      margin-top: 40px;
-    }
-
-    .section {
-      display: none;
-    }
-
-    .section.active {
-      display: block;
-    }
-  </style>
-</head>
-<body>
-  <main>
-    <div class="header">
-      <h1>Bravos Lending</h1>
-      <p class="subtitle">Client Portal &bull; Check your loan, calculate payments, or apply</p>
-    </div>
-
-    <div class="tabs">
-      <button class="tab-button active" onclick="switchTab('loan')">My Loan</button>
-      <button class="tab-button" onclick="switchTab('calculator')">Calculator</button>
-      <button class="tab-button" onclick="switchTab('apply')">Apply / Ask</button>
-    </div>
-
-    <!-- Loan Section -->
-    <section id="loan" class="section active">
-      <div class="card">
-        <h2>Check My Loan</h2>
-        <p class="card-subtitle">Enter your private access code to view your loan details. Your information is encrypted and secure.</p>
-
-        <div class="form-group">
-          <label>Access Code</label>
-          <div class="row">
-            <input type="text" id="accessCode" placeholder="e.g. K7QM4D2X" autocomplete="off" style="text-transform: uppercase;">
-            <button class="primary" onclick="viewLoan()" style="flex: 0 0 auto; width: auto; padding: 10px 24px;">View</button>
-          </div>
-          <div id="loanError" class="error"></div>
-        </div>
-      </div>
-
-      <div id="loanOutput"></div>
-    </section>
-
-    <!-- Calculator Section -->
-    <section id="calculator" class="section">
-      <div class="card">
-        <h2>Loan Calculator</h2>
-        <p class="card-subtitle">Estimate your monthly payments and total interest.</p>
-
-        <div class="form-group">
-          <label>Amount You Need (&#8369;)</label>
-          <input type="number" id="calcAmount" min="1000" step="500" value="10000" oninput="updateCalculation()">
-        </div>
-
-        <div class="form-group">
-          <label>Loan Term</label>
-          <select id="calcTerm" onchange="updateCalculation()">
-            <option value="2">2 months</option>
-            <option value="3" selected>3 months</option>
-            <option value="4">4 months</option>
-            <option value="6">6 months</option>
-            <option value="12">12 months</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>First Payment Date</label>
-          <input type="date" id="calcFirstDate" oninput="updateCalculation()">
-        </div>
-
-        <div id="calcResults" style="margin-top: 20px;"></div>
-
-        <p class="card-subtitle" style="margin-top: 20px; color: var(--mu);">
-          <strong>Note:</strong> Estimate only. Rate shown is our standard 6% per month (flat) plus a one-time processing fee. Interest is charged per day, so the first payment date affects the final amount. Subsequent payments are due every 15 days.
-        </p>
-      </div>
-    </section>
-
-    <!-- Apply Section -->
-    <section id="apply" class="section">
-      <div class="card">
-        <h2>Apply or Ask a Question</h2>
-        <p class="card-subtitle">Fill out the form below and we'll get back to you within 24 hours.</p>
-
-        <div class="form-group">
-          <label>Your Name</label>
-          <input type="text" id="applyName" placeholder="Full name">
-        </div>
-
-        <div class="form-group">
-          <label>Mobile Number</label>
-          <input type="tel" id="applyPhone" placeholder="+63 999 123 4567" inputmode="tel">
-        </div>
-
-        <div class="form-group">
-          <label>Town / City</label>
-          <input type="text" id="applyCity" placeholder="e.g. Tagbilaran City">
-        </div>
-
-        <div class="form-group">
-          <label>Amount You Need (&#8369;)</label>
-          <input type="number" id="applyAmount" min="0" placeholder="Leave blank if asking a question">
-        </div>
-
-        <div class="form-group">
-          <label>Preferred Term</label>
-          <select id="applyTerm">
-            <option>2 months</option>
-            <option selected>3 months</option>
-            <option>4 months</option>
-            <option>6 months</option>
-            <option>12 months</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Message / Purpose</label>
-          <textarea id="applyMessage" rows="4" placeholder="Tell us about your loan purpose or question..."></textarea>
-        </div>
-
-        <button class="primary" onclick="copyInquiry()">Copy Inquiry to Clipboard</button>
-        <div id="applyStatus"></div>
-
-        <p class="card-subtitle" style="margin-top: 16px;">
-          We will reply to the number you provide. Please do not include passwords or bank PINs.
-        </p>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <p>Bravos Lending &bull; Bohol, Philippines</p>
-  </footer>
-
-  <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxewcliTbuc2dQJEzay8gP0L66ukmcIoDxREIoJlaiAcECEGI5JYsYG1KBTXLpEFd4u/exec";
-    const ASOF = "4 Oct 2026";
-    const RATE = 6;
-
-    function $(id) {
-      return document.getElementById(id);
-    }
-
-    function switchTab(tabName) {
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
-      
-      $(`${tabName}`).classList.add('active');
-      if (window.event && window.event.target) {
-        window.event.target.classList.add('active');
-      }
-    }
-
-    // Sanitize string and clean question mark encoding artifacts from Apps Script
-    const cleanText = (str) => {
-      if (!str) return '';
-      return String(str)
-        .replace(/\?/g, '•')
-        .replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-    };
-
-    // Currency formatting using standard unicode escaping (\u20B1 = ₱)
-    const P = (n) => {
-      if (typeof n === 'string') n = n.replace(/[^0-9.-]/g, '');
-      return '\u20B1' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-    };
-
-    const P2 = (n) => {
-      if (typeof n === 'string') n = n.replace(/[^0-9.-]/g, '');
-      return '\u20B1' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    };
-
-    // Fetch loan data dynamically from Google Apps Script
-    async function viewLoan() {
-      const code = $('accessCode').value.toUpperCase().trim().replace(/[^A-Z0-9]/g, '');
-      $('loanError').textContent = '';$('loanOutput').innerHTML = '';
-
-      if (code.length < 5) {
-        $('loanError').textContent = 'Please enter your full access code.';
-        return;
-      }
-
-      try {
-        const res = await fetch(`${WEB_APP_URL}?code=${encodeURIComponent(code)}`);
-        const data = await res.json();
-        
-        if (data && data.success) {
-          showLoan(data);
-        } else {
-          $('loanError').textContent = data.message || 'Code not recognized. Please check it or contact us.';
-        }
-      } catch (err) {
-        $('loanError').textContent = 'Unable to fetch statement. Please check your internet connection or try again later.';
-      }
-    }
-
-    function showLoan(data) {
-      let html = `
-        <div class="card">
-          <h2>Hello, ${cleanText(data.name)}</h2>
-          <p class="card-subtitle">Statement as of ${cleanText(ASOF)}. Payments made after this date may not appear yet.</p>
-        </div>
-      `;
-
-      data.loans.forEach((loan) => {
-        const pct = Math.min(100, Math.round(loan.paid / loan.total * 100));
-        const statusClass = `status-${String(loan.st).toLowerCase()}`;
-        const statusText = loan.st === 'Watch' ? 'Payment Due' : loan.st;
-
-        html += `
-          <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <h2>${cleanText(loan.label)}</h2>
-              <span class="status-badge ${statusClass}">${cleanText(statusText)}</span>
-            </div>
-            <p class="card-subtitle">Released ${cleanText(loan.date)} &bull; ${loan.months} months &bull; ${cleanText(loan.rate)}% / month</p>
-
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: ${pct}%"></div>
-            </div>
-            <p class="card-subtitle" style="margin: 4px 0 12px 0;">${pct}% paid</p>
-
-            <div class="info-row">
-              <span class="info-label">Amount Financed</span>
-              <span class="info-value">${P(loan.fin)}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Total Payable</span>
-              <span class="info-value">${P(loan.total)}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Bi-weekly Installment</span>
-              <span class="info-value">${P(loan.inst)}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Paid So Far</span>
-              <span class="info-value">${P(loan.paid)}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Remaining Balance</span>
-              <span class="info-value">${P(loan.out)}</span>
-            </div>
-            ${loan.od > 0 ? `
-            <div class="info-row" style="color: var(--bad);">
-              <span class="info-label">Amount Past Due</span>
-              <span class="info-value">${P(loan.od)}</span>
-            </div>
-            ` : ''}
-            ${loan.up && loan.up.length ? `
-            <div class="info-row">
-              <span class="info-label">Next Due Dates</span>
-              <span class="info-value">${loan.up.map(cleanText).join('<br>')}</span>
-            </div>
-            ` : ''}
-          </div>
-        `;
-      });
-
-      html += `
-        <div class="card">
-          <p class="card-subtitle">Questions about your statement? Contact us and mention your name. Please settle any past-due amount as soon as possible.</p>
-        </div>
-      `;
-
-      $('loanOutput').innerHTML = html;
-    }
-
-    // Calculator functions
-    function updateCalculation() {
-      const amount = +$('calcAmount').value || 0;
-      const term = +$('calcTerm').value || 3;
-      const firstDate = $('calcFirstDate').value;
-
-      if (amount < 500) {
-        $('calcResults').innerHTML = '';
-        return;
-      }
-
-      const today = new Date().toISOString().slice(0, 10);
-      if (!firstDate) {
-        const d = new Date();
-        d.setDate(d.getDate() + 15);
-        $('calcFirstDate').value = d.toISOString().slice(0, 10);
-      }
-
-      const fee = amount < 5000 ? 75 : amount < 10000 ? 120 : 150;
-      const financed = amount + fee;
-      const numPayments = term * 2;
-      const perPayment = financed / numPayments;
-      const dailyRate = (financed * RATE / 100) / 30;
-
-      const firstPaymentDate = $('calcFirstDate').value || today;
-      const daysToFirst = Math.max(1, Math.round((new Date(firstPaymentDate) - new Date(today)) / 86400000));
-
-      let rows = '';
-      let totalRepay = 0;
-      let firstAmt = 0;
-
-      for (let i = 1; i <= numPayments; i++) {
-        const days = i === 1 ? daysToFirst : 15;
-        const amt = perPayment + (dailyRate * days);
-        const payDate = new Date(firstPaymentDate);
-        if (i > 1) payDate.setDate(payDate.getDate() + (15 * (i - 1)));
-        
-        if (i === 1) firstAmt = amt;
-        totalRepay += amt;
-
-        rows += `
-          <tr>
-            <td>${i}</td>
-            <td>${payDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
-            <td style="text-align: right;">${P2(amt)}</td>
-          </tr>
-        `;
-      }
-
-      const totalInterest = totalRepay - financed;
-
-      $('calcResults').innerHTML = `
-        <div class="info-row">
-          <span class="info-label">Cash You Receive</span>
-          <span class="info-value">${P(amount)}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Processing Fee</span>
-          <span class="info-value">${P(fee)}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Amount Financed</span>
-          <span class="info-value">${P(financed)}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Total Interest</span>
-          <span class="info-value">${P(totalInterest)}</span>
-        </div>
-        <div class="info-row" style="border-bottom: 2px solid var(--ln);">
-          <span class="info-label" style="font-weight: 600;">Total to Repay</span>
-          <span class="info-value" style="font-weight: 600; font-size: 18px;">${P(totalRepay)}</span>
-        </div>
-        <div class="info-row" style="padding: 12px 0 0 0; margin-top: 12px;">
-          <span class="info-label">First Payment</span>
-          <span class="info-value">${P2(firstAmt)}</span>
-        </div>
-
-        <table class="table" style="margin-top: 16px;">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Due Date</th>
-              <th style="text-align: right;">Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows}
-          </tbody>
-        </table>
-      `;
-    }
-
-    // Apply/Inquiry functions
-    function getInquiryText() {
-      const name = $('applyName').value;
-      const phone = $('applyPhone').value;
-      const city = $('applyCity').value;
-      const amount = $('applyAmount').value;
-      const term = $('applyTerm').value;
-      const message = $('applyMessage').value;
-
-      return `Loan Inquiry \u2022 Bravos Lending\nName: ${name}\nMobile: ${phone}\nLocation: ${city}\nAmount: ${amount ? P(amount) : '(not specified)'}\nTerm: ${term}\nMessage: ${message}`;
-    }
-
-    async function copyInquiry() {
-      const name = $('applyName').value.trim();
-      const phone = $('applyPhone').value.trim();
-
-      if (!name || !phone) {
-        $('applyStatus').innerHTML = '<div class="error">Please enter your name and mobile number.</div>';
-        return;
-      }
-
-      try {
-        await navigator.clipboard.writeText(getInquiryText());
-        $('applyStatus').innerHTML = '<div class="success">\u2713 Copied! Paste it in a message to us.</div>';
-      } catch (e) {
-        $('applyStatus').innerHTML = '<div class="error">Copy failed. Please select and copy manually.</div>';
-      }
-    }
-
-    // Initialize calculator date
-    window.addEventListener('DOMContentLoaded', () => {
-      const today = new Date();
-      today.setDate(today.getDate() + 15);
-      $('calcFirstDate').valueAsDate = today;
-      updateCalculation();
-    });
-  </script>
-</body>
-</html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bravos Lending – Client Portal</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f4ef;--card:#fff;--tx:#1d2320;--mu:#68716c;--ln:#e3e0d8;--ac:#1f6f5c;--bad:#b3392f;--warn:#b9791a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121614;--card:#1b211e;--tx:#e8ece9;--mu:#93a09a;--ln:#2b332f;--ac:#4fb59a;--bad:#e5776d;--warn:#e0a547}}
+:root[data-theme="dark"]{--bg:#121614;--card:#1b211e;--tx:#e8ece9;--mu:#93a09a;--ln:#2b332f;--ac:#4fb59a;--bad:#e5776d;--warn:#e0a547}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:640px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:0}h2{font-size:16px;margin:0 0 8px}.sub{color:var(--mu);font-size:12.5px}
+.c{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:14px;margin-bottom:14px}
+.tabs{display:flex;gap:6px;margin:12px 0}.tabs button{flex:1}
+input,select,textarea,button{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:9px 10px;width:100%;box-sizing:border-box}
+button{cursor:pointer;width:auto}button.on,button.p{background:var(--ac);color:#fff;border-color:var(--ac)}
+label{display:block;font-size:12px;color:var(--mu);margin:8px 0 3px}
+.r{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--ln)}.r b{text-align:right}
+.bar{height:8px;border-radius:4px;background:var(--ln);overflow:hidden;margin:8px 0}.bar i{display:block;height:100%;background:var(--ac)}
+.Overdue{color:var(--bad)}.Watch{color:var(--warn)}.Current,.Paid{color:var(--ac)}
+.b{padding:1px 9px;border-radius:99px;font-size:12px;font-weight:600;border:1px solid}
+.sc{overflow-x:auto}table{border-collapse:collapse;width:100%}td,th{padding:5px 6px;border-bottom:1px solid var(--ln);text-align:right}th:first-child,td:first-child{text-align:left}th{color:var(--mu);font-size:12px}
+.row{display:flex;gap:8px}.row>*{flex:1}
+</style></head><body><main>
+<h1>Bravos Lending</h1>
+<div class="sub">Client portal · check your loan, estimate a new loan, or send us an inquiry</div>
+<div class="tabs"><button id="b1" class="on" onclick="go(1)">My loan</button><button id="b2" onclick="go(2)">Calculator</button><button id="b3" onclick="go(3)">Apply / ask</button></div>
+
+<section id="s1">
+<div class="c"><h2>Check my loan</h2>
+<div class="sub">Enter the private access code we sent you. Your details are encrypted and cannot be seen without it.</div>
+<label>Access code</label><div class="row"><input id="code" placeholder="e.g. K7QM4D2X" autocomplete="off" style="text-transform:uppercase"><button class="p" onclick="look()" style="flex:0 0 auto">View</button></div>
+<div id="err" class="sub" style="color:var(--bad);margin-top:6px"></div></div>
+<div id="out"></div></section>
+
+<section id="s2" style="display:none"><div class="c"><h2>Loan calculator</h2>
+<label>Cash you need (₱)</label><input id="ca" type="number" min="1000" step="500" value="10000">
+<label>Term</label><select id="cm" onchange="calc()"><option value="2">2 months</option><option value="3" selected>3 months</option><option value="4">4 months</option><option value="6">6 months</option><option value="12">12 months</option></select>
+<label>Date of my first payment</label><input id="cf" type="date">
+<label>Show my payment schedule at</label><select id="cr" onchange="calc()"><option value="3">3% per month</option><option value="4">4% per month</option><option value="5">5% per month</option><option value="6" selected>6% per month</option></select>
+<div id="cres" style="margin-top:10px"></div>
+<div class="sub" style="margin-top:8px">Estimate only. Your rate is one of the rates shown (3% to 6% per month, flat) and depends on the loan amount, the term and your repayment record with us, and is confirmed when your loan is approved. A one-time processing fee is included. Interest is charged per day, so the date of your first payment changes the amount; later payments are every 15 days.</div>
+<div class="sub" style="margin-top:8px"><b>How rates are set:</b> the rates above are the same for everyone, and every client is assessed on the same factors – loan size, term, and repayment record. Returning clients who pay on time may qualify for a preferred rate. Any such offer is personal and appears only in that client's private statement.</div></div></div></section>
+
+<section id="s3" style="display:none"><div class="c"><h2>Apply or ask a question</h2>
+<label>Your name</label><input id="qn"><label>Mobile number</label><input id="qp" inputmode="tel">
+<label>Town / city</label><input id="ql"><label>Amount you need (₱)</label><input id="qa" type="number">
+<label>Preferred term</label><select id="qt"><option>2 months</option><option selected>3 months</option><option>4 months</option><option>6 months</option><option>12 months</option></select>
+<label>Message / purpose</label><textarea id="qm" rows="3"></textarea>
+<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="p" onclick="copyQ()">Copy my inquiry</button><span id="ct"></span></div>
+<div id="cok" class="sub" style="margin-top:8px"></div>
+<div class="sub" style="margin-top:8px">We will reply to the number you provide. Please do not include passwords or bank PINs.</div></div></section>
+
+<div class="sub" style="text-align:center">Bravos Lending · Bohol, Philippines</div>
+</main>
+<script>
+const BL={"f834e89634750c782f3efb0ff2b28e06":{"i":"MLSj0rW4YuTwCcYc","c":"DyVw5gw0agelAML7yjVmdYo2F3MrXdr1hNmmnhA9HXBZc3vefmUUw2u2FdC28UfUoKR2TzIKRKWRZThTwalpyYtXNB07tO7T0pr6d2nWEksaq1XvSShnJwINGN4AG8YFzpqnuoBDMT1Mo+QKPUGqXww4RcdtFPo3kkMGboYJgXfupJXT0UM7Xfr/bWxVXXOgM5iIYaRGLn/GHOaEZ9DRUB3nl1zCoVXOclr6QUXzR5V8LnQ6hA00hiIdWY39YcJpP0YA/SCYJhhFx0C0j7Xde13tS3aIWIzr1AD18dElEGwpbs2Gboca/xncoKkDC4GdfHHR/cCl1QoM4D+mQybMWxnDFg9d+w35yELWERzdqINPfLx5HdvpOal42BmwOkh8qQIdxESKfgkdoFrm2i3VoqXCF3puL2h+7oymqpb71kC89G+MLRr3"},"3061c154658bd9891c2658bada8a86b1":{"i":"LUxT25CVCfeP1Ut+","c":"aYXBuneM8Hf4SSWveCP5416gqHALzQS1tjrRbdGjDoMM2eYC+CRZNKDRCCgzHgLjjpm4KIbru6/iRedmAZqiZ0gaZYZpXR+gYKrAbrd5gS0POlKNrwKPb3R2KP88C2+QqouB/a4VHu4krEku67FpxlUYYaRn/9nm0SPMNUqhkoqaopFs6CzuQar9CCbK/pj6+8DEVYEHw6sfn2itqCfX/aVW5L9uRQ9kA/XfdHUJtTLb3viJUIw3V5SDmUCoQnfVqa1AEMad4DnvVigcUUhbESGwoWA4ZR7YH8B6G/FqKrgsRNBCw/lJYfqKeT8ZET2BkueDdxi+KGgnA169h0HuUBlJXziFL0vo3h9qBiR0Y0QMcSTnl+cWweVbLFjbxWK4bzLkXcxO7FJRSMGk9p4fglEwpJKxBkxsCEq1cPBscyQ="},"d19e348bfc03e36233f9f638b2748cb7":{"i":"ptd0JPGo84kI/XTb","c":"jYgl+HG7FCgWlhp5pl2GRU7Rgh+s0UTa+7RZDeuO2C/5UsHKaMVnmssjrZqPTm/wQ8szKuJKM7YvKhvaJDCeDMhD6N0z+g58Mq8W/eSqK1WCIumJ/6s0vdOLFyDd6Mzf2juv5A4pqHwSQdBTeyGyy+0GfKfHtENLvH81i8tUX+oSJOTd7a5kvjiqIoK0jbsTUX0Cw03AOcfze6JR3K0FW+ktONc0WU+0Nh1LURIi2TbZ+Pbk+CCjbvhUy5BKa0LGrcWiqHXwkvTjfuFVWYtytK5DwxlF2yytzVoumEz9jozTIIcDVBKZsGqyNjPk/ofUw5yvaEwKZbHKXsehsbDkpXhpVKj/8pH5apth42K/Xqi2eciH0dd/0/UCd67gwhUgwlsEUGuGjg=="},"f90ce1f2a5e4deba56290f3fbc89591c":{"i":"UaaFu+s9jFAghm6s","c":"viGEE+2p1yVGyI8VWaIkiWxQhgLMkwf8NTlyvW/yPi9lW0Pnz+uFiGVUaX6D0h+jJZGHywMrUTwOzMkKzGMgK7R66fYfHgdAnxWoL34HcOI8Rhi7vaKvzvrWbZKTct57E7VA6AQIPvrRdJ6pASXL7+hJERSwPv1TK90OUskD0eJ05oMUreMYTBxeyCgiIpb8z9w9eHgIn1dSMJHC9tchXVgkMmvMk3ZKUYSiZ5S3t3FMuPeQsgDhIgFSZWzUZcEYEVqFHCEJNSRcDDZPA29ck5tZjgW4B8h1xq9oC7LKhdjyc3ii6mspjPIeOwF8K3Ge2sH1hIukmMu28UPifxP79E5ck6EmCKGJvUHZSAFqlHo1fwvpjWjfoM6ppJaEryN5Yij/W55WlQMacvG6I0Y4384fV6j1dbDr3mYhlUqlh+9ehG+7lmn7PvtrhkMhvGhi2eJvK6nZuXFmhfV90UmUAKwzfyKoKR+6I0QF6IkVv3KHZv+3Q/toPTGH8fXRzseBC8tfc5SAiEUToj3DJ9aNJPNeMVW8uhKUXAFareUTzSWBChdHpPS98YtC90uNKuKbUYdOqtl1YGGTZ5TMiIMNBNWZacV6GYc75YfHUPwljAJWZfHjR6Cqnh82jnXtSBdEKaa7shnHDqJ9WwByHguU34Nq4k91L5KEUKLZ9UeXMspcKBTx3TP9HVpc7r9pN7qKXRrXJM5NyN2ir9oXD3E0dEBKEeKaf1z3T80nqU9MT9ArJ/3yqcrv+jDl1JFZ0FfmSZZDSoOOqjObD3koNxtFGc13s/F5gzMlWQoFO4Bt70gZxRc6Gta6HDqay2lNWe+chNQS1q4sr3KbMqWg2bg8schilYODGGF0yA=="},"1391c7b3f8aeb31e23ed81dc21ff8116":{"i":"MLsef8/64saj3bkz","c":"HcTezuP9AZRHqX2G0kekfYoTpZ0g8F6FcEBwHxO2JS+6sgyRyxm9hT172GewPmVK0MG4v9QqzlW4G/KO305mir5FtNbziTLNDOCgfYJIdMeNH8Nlory3uRg/cc3B3G+XDmDyhlVIAoub3OUc9IcDLRc0T7mKMcUZ9h4/l+A+5ObCbDBA6Vno0fHgriXqxKQz07MvTjLoMGEcuX0mhkZoYWEu6ItKqLPZAfyvRlnmCkjBSgiMIfkSGgLko2XOQi2o2vHSd5jWHBiJJkB8sZJjRq5pRlJhsB9hoJGNMtAGyM5l+UyJQx8u1Kg6y5QKNgtaoomJzUZQlVo5dI2UoinMNWogRw1+YtLju4+IR8JEbXNm85/CoZVrro4dlE7S7Tz69diEg2z+PjEvaaeD8DL0/73/Rj/3fVW6qVXWz64k5wbJSW3Z1rQM"},"7c94ebc25a50cea7536d28de0a218c76":{"i":"wS7n+Tpv01ep31ik","c":"44S5SDrCFaqoFKmYf/auA+cp1JH4kjIOL/Kp9CgRIkb8FxqDBnOdup02Z7052Ub+AFB+g2f7BbPTN8x6lVeNMi30ODhR8f9rmYcnEX9f/QxGZXJ4CcLfP3gva+Ny/M4xstKkcCSG8tj5DKpIz3J7jt+xB4X025kaaLTA1sWz+9Lj3EF+QIDrzSSqDWMTxcQnkJL8wY8kmrFlfChYBxDiBz3XWSbCBtV78voLEvciEktEDhXxy1xS1zFoTKeuwEK63Wp5dFuY/pXSbKsn/00dx/71ISoV1C6FL+zEHNLfMq456DiTeHjilw/cZfwUjTz0Jz1vq84IWPMoOg7P74O1HznRMuF2pOBB9MLav7n7VZVB3f47qVYP8EwwgOGbv8qHRBEoJ+W1Ijji6ZBLZBY5CqczZQsd/sAy"},"62b89435138dcb741cc03421646e874d":{"i":"up7sSGrxpFr/TFvE","c":"4M/BNPV0ISuojzTrVDsVAyaqRIy14KrV+GHoe+vAjPezmc+gALzBS4p63jC2bdZgVG16I8NAoPm8VzH8tc5RDA224Z+Utl8ONSmTEn4fcsOkVqtIIZe9eTewMuUtg2f3FwyKvOM29yS/Apc74qXyOz4R/HoUC+y3/oNg1QfZu/sIP+wZ83XHBxjp66i5rDdDJ3N88ErzGBYjibxr0WAJW/7AI+ZwQm8boh8vp/Ln3UZP/WBzKVCfVyQIUr41WIg0BYsjtUvcOrqUR84TwzhkaD+EDjaXF6fS+FxVypW2dsSgFmYAFrYyKaVNw4mLExnbnoqOQjBztGNwQgrC1bwfbIF5APzxgj1HKEjyAE7econTYyJwXI612AqDx/PaGRPViKHatvbpGQw7SLrCL4Y2txflFdJbX4nKJoj+Ss5Bk3f2U+sdRt1XyiKwEcrmuNxN8kLgxUK+i9cjQSHNTcGsH6HIt8QuJSXcZIbJo1wj"},"5be9a88c95fc6dfa6665d15b69eceecf":{"i":"wk+sydDZ9MPm2iGl","c":"rwRI4EImnXsEumRSpddVWAy2fGwOtywUjqE0/gOBFOvSJgdx53SPg9PKOskdIzKQ0IO/ZuMMbI1bgJl1mPqg4fsyYf0XAQN2Hz/UZIzQCcy75jv/IkjG1y3iJnuxWm+zwIymsDFSyvuLYV/YLZfmmlxdf1bdXFg6jYl1Ri7UkuQRVrpyv5ATvjG346KCgKaOqdoWPqSFw5nIqDAxFbIfCpRS8y/JxH8bsQ4hS9m2PcDYv0Ftb0wTUN6+VChss9ILdf7YLYptJ0kaBk+x0Uis2oAPQuDsKSR+RB/l/JSAumqq2KpJmobt4sVS2tS0d/1IML6ga06A3fCs64pkq9jFmz8o1Is4sx4K5Zn5uZLFBDi9bg2BEblmRDjl7Y8LwiyhNWlo2v4vJ2OuyrV/RMP5k+UbCh59jLZqAna2uupfA9ZejScAVdjcLso1yDmGTDufOJOxR/U+oPo51OUaR8eyMfUdwgUHbg=="},"cb33d5b9bd942ec335a6bb001b5836e9":{"i":"m8uBJIYZiB0J21C9","c":"7Miib0rX+KIj52YOqsjm7cZe45YH6aitYOgS9C7mWPGm6mHQhxcg1H27JTPj6prYJLCOoh9HhMmh2Qm5QebE/FACDkgtOxubs4JKjVIC8+SLGJ07Rnlmp7PwqqaiKb4XDFo7f9IQ8rWMAN7s1Yo4JkULM5B4pZpcrRuud9GvFC1/bKYXAJcyYzFLXy0cRtpwIcciqD4yprLR3/G4o8fcv+7fB9R6Po2p2IgQ1kZUMjRJ3DcY6kTHEtJZAuQw13CVHpzWPDbfbj2vbMrghM1AfXvxMQwnh6wcYXIuSze5HGD3hLdyOINIlh1i7x5vpEt6Pu6LqMKTCkRqEGMevUf4BEMaPyZcx6fJQCjVszk5l7c2sfVhuq6CMAP0KpFAeXqNpEjInveNyD1wcys1w/PPNmmXxpZTMFREV69snAyKpuZodsJko1caMhhfSSs0xECfrkjl75DJjc8JNCAUyqM46NiyfVlNRpJ26w3fwsJNNv4KiSz7paQ="},"f4d2db53eeaa7060f99d38519b472920":{"i":"bPUIAQNkcX3KqTgl","c":"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"},"f9b48a06883751ba97d660f1e5c80aa1":{"i":"gD4PnIa2LjpurmxI","c":"ICg3FP7qJtEnNlfFBVJWgugoHaFQr9y8QWY36UBhE5iWlUpZiMLHQRFW2Qq0hhKj7RTNZzvqv1JdJfe2Q8+5uiK66jhKSr8tEPccrBnIy2OdahFY0kYfp3xy5KFb4kXpZrqM1O55MuUNi+5OO610zDvqN3XJ7a9c824Z9OL3x/64lBvbD0vfwDHRfRF7vzam4gA4tiMqX2EafhxusI+tbNGKy7mybsvNgCvq/K/6XB20ckHWkoJgtZ5oL/j98hZTWcdSlCIbKILJ7BEh79nHilkO6LQDohCNaquh5mG7uPbhCmG2vCEfqPjhGZeP7og6yzFnWxw+5AQXZ9gFWOTYVulm02e5WruCVOTpYRLYsA868MyN6hKJqx+fsChmny6NsYm5td/QSZlU4T7FJL+6rl5PxxBxUnhAHQT/aZ4uJKmqpHVV2IVMcnMyvyUU9YYVy3vEUZQkn/DkFW4nBJ76AqCFCksA1RKp3oHBtt6Q3+HtXgHOR05oZU/0ahcRPkfEMnmLUZx9M0v/AvV4jHXsbci4iiUzHgFAFaizhAoRpWT9Kvz4j4bueZ7iQclBoShyKGYtHsBaFNpDhwbAhfKrUkuc8crXwo8uiH/sLlr4xYsKj/+lMA5ahTH4vr1dJuIjJMf2PNKlQKWVxuTxW8Iy0MaF5FAt/tZOg/rB0bdWbjdevdfZmdppedFEV7HVhIzEgwaeajXiCVQLNB1RKjyl/X84K0Y2M7buAQunw3eT4AvTFF9H4I72evrITS6Ejcqov655DDax9b3MEk7qhpA5xHCNIfQjxxw7Vn0rwjFWQZRVqVMJfpCAqZryqiSIouHii72wYzkplevJCVVokYbieDxuTSF0cXLESCzoxk8Wtqo="},"88290d7be9dd7f8840cf1a083c48435e":{"i":"vl1bxEB79cMdG223","c":"shMbbdeXzwP0cY/WIWZJsdzrDyjJZMPgFGcTZEMTzkXrru7EfHKXQ3HLfftkg0BltCHMs35jhESv18nWkRvNUVmgqOcrg+Oq4JtmYk9y1oLDKXKyIGC0W0hcQz3Jd/rQbGPYHbaYPPxyLWcU4DFeZO5eVMhCqZCkIv/7eFnXZNSCzfM4JbSaRiDnFaT5kLArnakcfa648B1otFjxhKM+NL6tgA8xTMABQs5e+J3TywkUUaUHHeM8xKoHB3mIpfJR30RfwAc7uFStlZhgWYVx/intHWd+wQ+PBf/ro+nQEYDT6raOAskdUxuJOjqsQvj2y8FESG3pXZTjLDoibySreNj7DY6HUhnPKx1l5U+pwoZt4j27ACkUJnAkHHPtTG7h4F1rLU1xCw7BeJJugxRAbChMgPPzlkrbnaaZAdu/0cZs5JB116QuybTuln6RbfYjKbCS5uf7l8d9e/8wR/0gDdQOuRSfBr0oR64ft0ePd0bEuqrEINM4psDRpLbCqPqcCLZrd5qFO140cA73qlVSrZrPFovVUA4XcrSsXbUzPW+eF/ZGrK/fnCihGOYI16P/n1rPuJ/brtNZCkd8ychUyE+t6t8uCyontQVOuSgr6lcLsUDJnb9/yC1DSCw7scbPKP7WlnIQb7aTCsEzrczFSDRw0IDYlgZiuOFURhuPGtiiPJIDX9pCfJv0du3wNxqqZOdUWxpeY8Snros59QlbOjknUKWApVfzE8hy/dE4SYCK7gTS4EOgkhpEhdiHuV4jOSraJqUYIqnc79R5Bmbzr1GUnzP8jtfUI1cJtccXYtP46hy0rzjo91Kqar578uGkJzzrWNsbVcYQD7v8/M7uv1+Qmqr/bHi1MA4fVz32n9ZWkHkPmJwC3Vw0yI8Csdl0x69hy5Uwaq2s9/MkAsszZS+NnSNSz5t9Nz0uAzFnElmJ+xTOkkHgvBtOVONYQlFPNwjyzpLfXlJReI9KiJvhemlXKp2PUa1EMyyrZ5lwvCIm5obBvmdHXd+8LBixcQTJgXCVTRqMQ2QGQt14lW3cD2ywQuINoWBDPN4pL8d/OMoYTWSj7w5wT7rMSl0aQu/R+RlvpJC3CIrR81Mkk6ejFDHDXwYTibLdcPod1/H6U/liGHhRrF+Yj5N0bzAgbTpjZdBs0AzlfRLQRY3Qa5yUWBdURdcYdt1p30mlvSDR/qWznh/E8BRRcwGNf4kSiH+EMuWH0R8SF7F6ixKus9Ivda76j9thLqkCXk3284K7x6SvUV37a7K7Mq4yyK3gBCkV/FNLkeR3B9lbKmzu/+KQMVCblmWmMjJzfYi24A7jAo64MPfvZWqdWFO7XZFWzK5lUWX0kJI1pjAlnw1AuQDGJS2Sw5kYx3m2UF9gDjxRBSxDqHyBCIl+z6Dvmj8cOhMmRbP86Du1vp+mvHXBqYdhyXwnclh+beeZj10fQBxzs5cWWLmHi1pGToP31Gq2TCg/yfX5Io//yqw4u3MuSoXG9BgEJEn5C5ICKb3hzlnet8LYrHZCa3/K/wlow3ZGKdgSwBixyg3T/bv/mA1t9v7hbNrLfT+4G2Fk1l1mLzva2E/HSsEEzifxwp/dsmOZidPsJ3P1lHNwvE/aXbyTWViMDv6zqSOAIWGqxZWk5pq9KHmLavOI9LTTZa5fxDyv78gnjK6XWmDbaRAOEg00H4fPSs/tEez2ZZY="},"3a19352a9306611ebb0565dd91da15e4":{"i":"Q3T/3nRJF5h8OZbC","c":"7WK0ZErkX9+egOyniRzBFoGiFpBs5do9xKXxVS8z+nXM/un5iIREZyfqxw+wKwsD9dzP2WONUoM+N+WI1Ez4rEaFu/ANfpi6+XMuncg2FMozKaK1EAley9t3lPxIm8jD0dk6AUJL18RphF6CzJRS8gpPH8ewoOGe5vxRELOpAW7crxXJ7E/pAqQzYCMKw/X5Gy3g2ymkn/aeWs1LrTRKypI1wgftkaaIhaMWGIyaF6Q8+9I3Qtv+YnXLWrVt6SBR8zbgC0i04OqOhH9VpQ/39LMQRDP4qJ2kodzTAFwbVz9cmIrjemqYyw0i/v8nwgSSeieJhfKBvtVniqqzgq5DR1UsoFU2udVfLsw+l3UXYYfjpWOLOtyrMZ6D+qW6VlpjPJkIwybHYG0yuP/XaW0oYtWrBRTRPhU5S21rf2kfgd5wPUvh33yWQMv5j/4jlkP7A+dPOtPgZ3oyXKfv8R4hbknpMxveVSFfiSMkSNYMq63KItN/VsAQKZ5hC6dLLyvtsuIeKZBS4lKe/KD+t5E9h+lPEGtqlI1EQczXQL3qVNTri52yddk1NbiJAdEj/Q1WTQpYsZoARyCeF1rX/I+xx/PFGZEZgPYkrofHGEdGCuqZhvziiF7L8o46vMZz9FQOKtf27P6LaC5IMbbMBwYUDoO3BxAnMRwismFsBwaeuFkaxMxjzCTrgadADroXnLM+nbPStjU71UE886tMVA7KesoLmkzpFl6bJE25q8bc17Ek3ypnmWylK0ef/NQn/oCigrTqE+FMpOzRQ/eqZ3YcqmOzPhWhLeZw0dcx5PoNVUrGNix9BkuarjkWD5aqo6t93QUuyWL0F8Xk2iAlJEPkfHdcMsFPWNnmPWmhn5LunrUL1TiHXGjwsnUelTJeJQn4Misw3Jp38A4pn8NeHYxnl5zlGw=="},"0faf3a78fd416c182f41fe12a41ebece":{"i":"LujaowEPkQpsm4C6","c":"4aUsQDLh6Q7QRLeV6Y6caEZHfyLfJ7Xb5ZHIKoW2UG+mDRW7b+ieM+TH3yng9I11HfOaNGoFxb/zsQO1LGICmnz5rgNvFORkIGrZjieb3UXi6s0pYmGy3xwYjXg8NMwtok2XY6CCJyP4yg9bA0OL9lNMc/33uQtQOYcZEGEIyApfe3hJllBpX+JryIEluYfxj7KmWCGqdX5TvywZmE/N41nX9vX9zhZpb71W4UGNIiSCQe1W3H+jmavOnWw+qVlFH3EdEuVVyjnejZPlZf1QDu08JMvkbaMWK73pjAhv584KQFmsAQEhemf18yT+msF4kdp4Sp0aO5SfsHAP+9DSdE9kP6lrXH+CBx0hYkgH71Llie89PtPNlr6iwAlLyCCW5i22vLFBzOohFgjG/ODoEe66A4rAA4ih80ofqlK6OUNZ1m71dlaVWJ4QvUMfXrpj/pP3M0dBesozpmaQgR7qC+ytdMEDddEjcdyHjHN9VOCGuEMm"},"c2652ff023f322c40344f55c0e75c6a8":{"i":"uDAU+DQ6Ksj2zHFf","c":"zYeYD5Sv4AxX97kx5942zR/UBqIzEbYEl1DPZ+mJmBTzMELwFHuBPZ4HEgFgeiZJ3TriRsfgMKdUXOnybTxU8eGErJNYH7LmIdNsSBNrbI+E+PG7TynEdlT0JjzalEI26i5hYBe/MNo+2RAvJ+9KFx+zvk2Msq8amVSCRL6EClvAkWSWOeYLdpTQF6mzGyIIPzI1vRtATG5PkAngoj9I0peiu2+Dei1WQ1giSitWGIGUQB2bGduxn2OYYryGHrpP9BmK2HPF3f8cBV1DG97S29mBGyQbhGXM9fzKryyrVGn7eVxNwc5b476a7jhCp2WuwjNwP3PHPsXk+E5i2TCJIVMXDQYVbOpvWvSPocfiYmeQj1Pgfk4WOGZg3TYFgElPwwOF52lZNSj4Wk0KD7x6y159bs14FrfXy6b0ZlK1zr66FTeKL34rv0wLW1l1XHva4bY="},"ac67733dff9dfef4221122580c5f8eef":{"i":"JoBjyvDZtDHIX1Ts","c":"dCJAvg/GYABzZ89ZhdeoRh+fu9ABBx7biEMtycRUqH+Mzk9PA7NAhi4exwocE3NtsfR7CBQI70BUAVuJvWu1dX8IygGIp/ogiMnpm8De8rO0aYRCwQxQv6vVlNQZYIdE3aJB+VaAOyN29zfREh3Ljss44VZwmmhr4t4G/n7zqgzkaaSBSiy7LIGSs3Kd2Do2Jbx3nZXRSc13oOmgBetaodIqWE8Q4n9XjC6YrrarzSXafi+lZwpJfciL2mWvhl/+SnPUfcQtPwrYdiGTc5FUPOn7N2TZNbQ3FHM6syItdeHGKWg+LyZbIeP98b8sRkVIYbyEYUAYuKRBAcvZlLSY3onTWa7KiH6QZlDmo88KOW7F9HKmxvKa79JoP611Iclpol5xsJOBSPAasZgWYWjbkxitrQGaI0Tac0iGbrDfQ5iL+LzCME8auuHm4p2yiq9T9mA8VRp4rliRFbcxaIjCOMQbvao9"},"caa38ab99e7154e717331bc31191e13b":{"i":"vILf5qyttPMrqLjx","c":"Cd5fENdxMp4I6TA1BQKC1G0L0eih8aaCZbRPP2ze1wU+E4aaoOQDsuPaqZukoKdiUR1rhQhzAoB2DJhX4mj/jvof8UY/iGsCQY2KmJSwxopZ2X+8fP2E5mM809gyWouPWlXCdmELYaCjPv6gUsSSG1KTKC02a0Jbcfqoq1QY2uruZyHw1muIoYdnlFbvyqv9RDBuRbXKGI9EFzPiS6H1kJ348xOCxY+1kkjn8hPnkkX4pYZO28xWxxr3X7FSncaGlbKe+EuO3t/F2SA+6pXgMPL5TmWnKI48CkHhURdFQgoEAzdMuGUY5TQf0mua0TYNOAD+6TgWXYCAWJW6raw8+U8qgDMZGAY0AOlFqcK/gRC0dMBwnrOq1jAllHqjIZ/9a5iLDcddyKvC1mmpPT5bDNjLDXwQhHz/mvNY5Y6r0lkLQZKOGDCohVhyItxcHOhu"},"a3fc930cb7baeba5a6c4627c44955326":{"i":"HpNHj/JD7Qggkz2G","c":"CO8s60nTOHqeKDtaaTkGoxOKxTgtl1Ha/Owz/oqdb5JADpOnOCz0635kP9CReVt/Bu2bBzu8KRVqiXqe3EjYuvWUxQzbC1g20SBql2ZGLDviKQ9/i9vy0Ftxr93brBotCSRb+dOAjPFUMaARQH5FcVNPmAPqRvwPtodCNoQoVXXpXFRpF8iAKmd7huB5LWBUmhJZ0cOgKeRf1BcxHAgsp8AvwRsemC92u75mFICUFXUZX4AInECITcby86bh3zNEbGwyUm3gMB6XwSJwrkdwohYCBXzm7LwUBGyUxRM4c6YEkLg6q0CgfyDx5R9eOA78odM5955S0IWYzOwbUqF/l5iFyd4+g1wVFMnj8xBObLp2+xF0Z2YRGFLcRjMAdnv22DJuakMLXn9+e3tuBV0IrXIujzTUActvT67HSMmyNH6vFEytsF3HN9MqK1YENC4fbAtHZQvB"},"d479bbf4f9de365544637dc240f53775":{"i":"+wPTMnSpQ/Cal1Sd","c":"Mu0iRKiNy3diU8hCl5LS7QzbNCI8b0nGZTNZ1+NFgrewkOUWPAFE+bEEJ0g/N9t9sg7X8Ssb3ktm5yX225b/AKltb5RtXfj1Kb+vlZFAb54ZoodwzsFG9EEdlYCyOJ1dYp43TwzQSRq+aIFO1cEwA9QD1b4xjkIBw4ZLLT5NOKFmNPxpmlI3ZqEXAv4DJJnLy6CWMOk7Gw7vYOi8zmgaRRpbnnIFypAsZLHgamikKZKmfXCDttuX3ZL6VD5NRRn26xsKmo6FTRBoGniTw03TxNt238kkPOWAcuhYaL85Hh0cAjGD9RkjrqMXEeVALwmUWkrfue5kMafL1z4OdMEfix5+c78nCI4xM7ZpGUvL/qcCAsGue4hpKLrlkirjhmyuDjHtzvgqPJWMp9nza4O9SvGfImvbFcp4AnvrVbCSDUMOTf9jPtiiybOGzDaWMHyg03Ytuh5u9+6D/Y5fiwA+h9zoPr+tbONaYVfzKD/QfLb3RciqGPvB+NcD6D2np7p5AvWCBV448Gys8xkiH14WYhJboYq4OZ1z3vzxorC9TYhKsbK95VPjRyp4Dngu7lBt/iu20EcyV81RA98gVpE3Iex1+a3fRnz6cS1TpUye3a2LbnSzgb02vZGfj1cwtaMHgt25YYPehZRd3T5caovuZWug+he+vxsEIpeI7Ha7h7r0B6xklJ1X9+FCNbm8y7b+i1gGT8/nevxTbHL2YXFdjJRhmEsbfxgcJEtZ642a94GpmVfj8hw9WlbMuGQD/pEAY+v3OVS0g+lNqSE6qzslPr3ezBxqy1CfWeqV9wHsqhyie72b"},"59f85910affafeea6f50fe920ceab3a0":{"i":"Ns2M2EnFjp31oNZ4","c":"IUyOKvzRC2HteEtSw+/rXyQpouvGvSoC/6poSwsSbgi1eBg6NHT6LSnacbfIyuJk77Ac2/e02stlEiFV+nxjnoeWgoj+nBjSgP8dm86lQ7boM6R/mWOdK+/pD/ISP2tR33mHcj2pOyTeIJBZWXiiptDb3daEqeiFBAZspvdUb8H4KGWMJtaDRi1368y9dGGvmSz8EDALPb+v5ARFuPE/1/MLkiwFbb4l1nMRFJiz2hvy3HEtcavNibwZYOVYQod644mBn8P+JKP6ousLwNQdwyVxjrvOVd9zkG2fRBbWqFQHZJdtRhoBhk482NdX1q0KlZifLIqdCOrszvHDjhzCQJj0/JqEodYc2mYiXad6gTb4bGrdiQ4AHZxjVML/fGlM1wQXXCsluyqwNc3lzPfeNaOwVYXW2cmsl8I6HbncgYqS2Db0n54sk5xEeZ9kUiVTOkgzp1VaYfUz8c7uxAD8DA4="},"28ccad42ed63a4ed78052d528dbf1b55":{"i":"CbqELdRzX7V2hP2l","c":"1Xwx5met0X3o6G7qUmAxA169YYtL4WjP5VRLxx8zhRwiTOpMmlNNrXo+wlWksJoSUay5wyMfp1CvUAihvIoS4BdBWalAXWKnSY3YBQDXAyFtoC1bkk6q9oGUAdPL860Lgyg/ot+WBaZHK0YeJEYgK4GQ7ad4+Kqv+IgWUGq9kNyKije4Zyr14QMbKrd+aqw1uQS730QSn2X3IJRb/ELTV+9E1EPc9glgYmdsFycgI/Ha7X0prGGu8EcVDmlQ7dIzD6BC5f/wx2vyL+hUpU29g1KAWhsRHgva0tdQfqLDLpkndKF9s0kM3NBHhg4H3DSjMU0UQcNW5AcZVsR9aGkTkRkFiEArpZeFhdm8IMZQXA3P/J1BBZT4zb72T/JvdOnkpCXkl8wrhiAzzLKXEt3hr2iR74NL3496m5uIi7cfvldI"},"978eb41faa86248b5115c947bfd666e3":{"i":"1tuQVnEjWIoJZtX+","c":"XZWR/Sz1p5eOIMy5FdOj00TNm9TKZn7qnfP1Dh58GcFL01TEFx5rxFMe9P6K8bkrE2dIm4Qa6lbaW2epPQ5rdiu1JpBkIgtlCPxFQkf/6GZsivYSEUOO7amxWUHCrjGJNXc8w7EFt6yE2BFIgq961zHZ1e2QdQ6QfJFO39+3DdGe3xgzjLW2vRVIi4hWDq2yxP2B2zSAJzXg85+gIFn2KNsqHLnDKMl+yb2NQMtI7k6QsnOD1243tz6w7VGgkgOW+8Wl/qol3qoO7Sa3Lgg7WExnbe3pf7BerocdwCH9EBIRgpmXybZQPpEcn55e0aYKZBdShi0M1q75qkjBwzk6B6sgNFhjRM2c+nZBMJTCBwXAEI7C3JAxpRSubiP0DXnFPWYxiLs="}},GS="lPco4YJq06aHkViERqz/PA==",ASOF="3 Oct 2026",RLO=3,RHI=6,CONTACT=[];
+const P=n=>'₱'+Number(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}),$=i=>document.getElementById(i);
+const E=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function go(n){[1,2,3].forEach(i=>{$('s'+i).style.display=i==n?'block':'none';$('b'+i).className=i==n?'on':''})}
+const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0)),hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+async function look(){
+ const code=$('code').value.toUpperCase().replace(/[^A-Z0-9]/g,'');$('err').textContent='';$('out').innerHTML='';
+ if(code.length<6){$('err').textContent='Please enter your full access code.';return}
+ try{
+  const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(code),'PBKDF2',false,['deriveBits']);
+  const bits=new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',salt:b64(GS),iterations:200000,hash:'SHA-256'},km,384));
+  const bl=BL[hex(bits.slice(0,16))];if(!bl)throw 0;
+  const key=await crypto.subtle.importKey('raw',bits.slice(16),'AES-GCM',false,['decrypt']);
+  const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(bl.i)},key,b64(bl.c));
+  show(JSON.parse(new TextDecoder().decode(pt)));
+ }catch(e){$('err').textContent='Code not recognized. Please check it or contact us.'}}
+function show(d){
+ let h=`<div class="c"><h2>Hello, ${E(d.name)}</h2><div class="sub">Statement as of ${E(ASOF)}. Payments made after this date may not appear yet.</div></div>`;
+ CUR=d.loans;d.loans.forEach((l,i)=>{const pct=Math.min(100,Math.round(l.paid/l.total*100));
+  h+=`<div class="c"><h2>${E(l.label)} <span class="b ${l.st}">${l.st=='Watch'?'Payment due':E(l.st)}</span></h2>
+  <div class="sub">Released ${E(l.date)} · ${l.months} months · ${E(l.rate)}% / month</div>${l.note?`<div class="sub" style="margin-top:4px">${E(l.note)}</div>`:''}
+  <div class="bar"><i style="width:${pct}%"></i></div><div class="sub">${pct}% paid</div>
+  <div class="r"><span>Amount financed</span><b>${P(l.fin)}</b></div><div class="r"><span>Total payable (principal + interest)</span><b>${P(l.total)}</b></div>
+  <div class="r"><span>Bi-weekly installment</span><b>${P(l.inst)}</b></div><div class="r"><span>Paid so far</span><b>${P(l.paid)}</b></div>
+  <div class="r"><span>Remaining balance</span><b>${P(l.out)}</b></div>
+  ${l.od>0?`<div class="r"><span class="Overdue">Amount past due</span><b class="Overdue">${P(l.od)}</b></div>`:''}
+  ${l.up.length?`<div class="r"><span>Next due dates</span><b>${l.up.map(E).join('<br>')}</b></div>`:''}${plan(l,i)}</div>`});
+ h+=offerCard(d.offer);h+=`<div class="c sub">Questions about your statement? Contact us and mention your name. Please settle any past-due amount as soon as possible.</div>`;$('out').innerHTML=h;CUR.forEach((l,i)=>{if($('pd'+i))pay(i)});oc()}
+// calculator
+let CUR=[];
+const dd=(a,b)=>Math.round((new Date(b+'T00:00:00Z')-new Date(a+'T00:00:00Z'))/864e5),TD=new Date().toISOString().slice(0,10),
+P2=n=>'₱'+Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}),
+ad=(s,n)=>{const d=new Date(s+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)},
+fd=s=>new Date(s+'T00:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});
+function plan(l,i){
+ if(l.out<1)return '';
+ if(l.lump)return '<div class="sub" style="margin-top:8px">To settle this account, please contact us for the exact amount.</div>';
+ const rem=l.n-l.pi;let o='';for(let k=1;k<=Math.min(rem,6);k++)o+=`<option value="${k}">${k} installment${k>1?'s':''}</option>`;o+=`<option value="F">Pay in full (${rem} left)</option>`;
+ const def=l.od>0?TD:(l.nx&&l.nx>TD?l.nx:TD);
+ return `<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--ln)"><b>Plan my payment</b><div class="sub">Interest is charged per day, so the amount depends on the date you pay. Pick your date to see the exact figure.</div><div class="row"><div><label>Date I will pay</label><input type="date" id="pd${i}" value="${def}" min="${TD}" onchange="pay(${i})"></div><div><label>How much</label><select id="pk${i}" onchange="pay(${i})">${o}</select></div></div><div id="pr${i}" style="margin-top:8px"></div></div>`}
+function pay(i){const l=CUR[i],D=$('pd'+i).value,k=$('pk'+i).value;if(!D)return;
+ const rem=l.n-l.pi,days=Math.max(0,dd(l.an,D)),pr=(k=='F'?rem:+k)*l.pp,it=l.daily*days,tt=pr+it;
+ $('pr'+i).innerHTML=`<div class="r"><span>Principal</span><b>${P2(pr)}</b></div><div class="r"><span>Interest (${days} days since ${fd(l.an)})</span><b>${P2(it)}</b></div><div class="r"><span>Amount to pay on ${fd(D)}</span><b style="font-size:18px">${P2(tt)}</b></div><div class="sub">Estimate based on payments recorded up to ${E(ASOF)}. If you paid after that date, or want to pay on a different date, contact us – the final amount is confirmed by Bravos.</div>`}
+const fee=c=>c<5000?75:c<10000?120:150,addD=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+function sched(c,m,cf,rate){const f=fee(c),fin=c+f,n=m*2,pp=fin/n,dy=fin*rate/100/30,d1=Math.max(1,dd(TD,cf)),rows=[];let tot=0;
+ for(let k=1;k<=n;k++){const amt=pp+dy*(k==1?d1:15);rows.push([k==1?cf:ad(cf,15*(k-1)),amt]);tot+=amt}return{f,fin,tot,rows,d1,rate}}
+const RATES=[3,4,5,6];
+function calc(){const c=+$('ca').value||0,m=+$('cm').value;if(!$('cf').value)$('cf').value=ad(TD,15);const cf=$('cf').value,S=RATES.map(r=>sched(c,m,cf,r)),i=Math.max(0,RATES.indexOf(+$('cr').value)),sc=S[i];
+ $('cres').innerHTML=c<500?'':`<div class="r"><span>Cash you receive</span><b>${P(c)}</b></div><div class="r"><span>Processing fee</span><b>${P(S[0].f)}</b></div><div class="r"><span>Amount financed</span><b>${P(S[0].fin)}</b></div><div class="sc" style="margin-top:8px"><table><tr><th>Rate / month</th><th>Total interest</th><th>Total to repay</th><th>1st payment</th><th>Then every 15 days</th></tr>${S.map((s,j)=>`<tr><td><b>${RATES[j]}%</b></td><td>${P(s.tot-s.fin)}</td><td>${P(s.tot)}</td><td>${P2(s.rows[0][1])}</td><td>${P2(s.rows[1][1])}</td></tr>`).join('')}</table></div><div class="sub" style="margin-top:6px">The first payment includes ${S[0].d1} days of interest from release to your first payment date.</div><div class="sc" style="margin-top:10px"><b>Schedule at ${sc.rate}%</b><table><tr><th>#</th><th>Due</th><th>Amount</th></tr>${sc.rows.map((r,k)=>`<tr><td>${k+1}</td><td>${fd(r[0])}</td><td>${P2(r[1])}</td></tr>`).join('')}</table></div>`}
+let OF=null;
+function offerCard(o){
+ if(!o)return '';OF=o;const exp=o.until&&o.until<TD;
+ return `<div class="c"><h2>Your renewal offer</h2><div class="sub">Personal to you${o.until?' · valid until '+E(fd(o.until)):''}. ${exp?'This offer has expired – please contact us.':'Based on: '+E(o.reason||'your repayment record')+'.'}</div><div class="r"><span>Your rate</span><b>${E(o.rate)}% per month</b></div>${exp?'':`<label>Amount I need (₱)</label><input id="oa" type="number" min="1000" step="500" value="10000" oninput="oc()"><label>Term</label><select id="om" onchange="oc()"><option value="2">2 months</option><option value="3" selected>3 months</option><option value="4">4 months</option><option value="6">6 months</option><option value="12">12 months</option></select><label>Date of my first payment</label><input id="of" type="date" onchange="oc()"><div id="ores" style="margin-top:8px"></div><div class="sub" style="margin-top:6px">Any unpaid balance on your current loan is deducted from the cash released. Ask us for the exact figure.</div>`}</div>`}
+function oc(){if(!OF||!$('oa'))return;const c=+$('oa').value||0,m=+$('om').value;if(!$('of').value)$('of').value=ad(TD,15);const s=sched(c,m,$('of').value,OF.rate);
+ $('ores').innerHTML=c<500?'':`<div class="r"><span>Processing fee</span><b>${P(s.f)}</b></div><div class="r"><span>Amount financed</span><b>${P(s.fin)}</b></div><div class="r"><span>Total interest</span><b>${P(s.tot-s.fin)}</b></div><div class="r"><span>Total to repay</span><b>${P(s.tot)}</b></div><div class="r"><span>First payment</span><b>${P2(s.rows[0][1])}</b></div><div class="sc" style="margin-top:8px"><table><tr><th>#</th><th>Due</th><th>Amount</th></tr>${s.rows.map((r,i)=>`<tr><td>${i+1}</td><td>${fd(r[0])}</td><td>${P2(r[1])}</td></tr>`).join('')}</table></div>`}
+$('ca').oninput=calc;$('cf').oninput=calc;calc();
+// inquiry
+function msg(){return `Loan inquiry – Bravos Lending\nName: ${$('qn').value}\nMobile: ${$('qp').value}\nLocation: ${$('ql').value}\nAmount: ${$('qa').value?P($('qa').value):''}\nTerm: ${$('qt').value}\nMessage: ${$('qm').value}`}
+async function copyQ(){if(!$('qn').value||!$('qp').value){$('cok').textContent='Please add your name and mobile number.';return}
+ try{await navigator.clipboard.writeText(msg());$('cok').textContent='Copied! Paste it in a message to us'+(CONTACT.length?' using a button above.':'.')}catch(e){$('cok').textContent='Copy failed – please select and copy manually.'}}
+$('ct').innerHTML=CONTACT.map(c=>`<a href="${E(c.url)}" target="_blank" rel="noopener" style="padding:9px 12px;border:1px solid var(--ln);border-radius:8px;color:var(--tx);text-decoration:none" onclick="return pre(this,'${E(c.k)}')">${E(c.label)}</a>`).join(' ');
+function pre(a,k){if(k=='sms'||k=='mail'){a.href=a.href.split('?')[0]+(k=='sms'?'?body=':'?subject=Loan%20inquiry&body=')+encodeURIComponent(msg())}return true}
+</script></body></html>
