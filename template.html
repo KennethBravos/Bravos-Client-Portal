@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bravos Lending – Client Portal</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f4ef;--card:#fff;--tx:#1d2320;--mu:#68716c;--ln:#e3e0d8;--ac:#1f6f5c;--bad:#b3392f;--warn:#b9791a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121614;--card:#1b211e;--tx:#e8ece9;--mu:#93a09a;--ln:#2b332f;--ac:#4fb59a;--bad:#e5776d;--warn:#e0a547}}
+:root[data-theme="dark"]{--bg:#121614;--card:#1b211e;--tx:#e8ece9;--mu:#93a09a;--ln:#2b332f;--ac:#4fb59a;--bad:#e5776d;--warn:#e0a547}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:640px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:0}h2{font-size:16px;margin:0 0 8px}.sub{color:var(--mu);font-size:12.5px}
+.c{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:14px;margin-bottom:14px}
+.tabs{display:flex;gap:6px;margin:12px 0}.tabs button{flex:1}
+input,select,textarea,button{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:9px 10px;width:100%;box-sizing:border-box}
+button{cursor:pointer;width:auto}button.on,button.p{background:var(--ac);color:#fff;border-color:var(--ac)}
+label{display:block;font-size:12px;color:var(--mu);margin:8px 0 3px}
+.r{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--ln)}.r b{text-align:right}
+.bar{height:8px;border-radius:4px;background:var(--ln);overflow:hidden;margin:8px 0}.bar i{display:block;height:100%;background:var(--ac)}
+.Overdue{color:var(--bad)}.Watch{color:var(--warn)}.Current,.Paid{color:var(--ac)}
+.b{padding:1px 9px;border-radius:99px;font-size:12px;font-weight:600;border:1px solid}
+.sc{overflow-x:auto}table{border-collapse:collapse;width:100%}td,th{padding:5px 6px;border-bottom:1px solid var(--ln);text-align:right}th:first-child,td:first-child{text-align:left}th{color:var(--mu);font-size:12px}
+.row{display:flex;gap:8px}.row>*{flex:1}
+.fl{padding:0 6px;border:0;background:none;color:var(--warn);font-size:16px}details summary{cursor:pointer}
+.kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:10px 0}.kg{background:var(--bg);border:1px solid var(--ln);border-radius:10px;padding:8px 10px}.kg span{display:block;font-size:11px;color:var(--mu)}.kg b{font-size:17px}.kg small{display:block;font-size:11px;color:var(--mu)}
+.nb{background:var(--bg);border:1px solid var(--ln);border-left:4px solid var(--ac);border-radius:8px;padding:10px;margin:10px 0}.nb.od{border-left-color:var(--bad)}
+details.act>summary{padding:10px 12px;border:1px solid var(--ln);border-radius:8px;margin-top:8px;background:var(--bg);font-weight:600}details.act[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:0}
+.big{font-size:20px;font-weight:700}.chips button{margin:6px 6px 0 0;padding:4px 10px}.pl td{vertical-align:top}
+.pH{display:none}
+@media print{
+ .noprint,.tabs,#s2,#s3,#dsp,#prf,.fl,button,details>summary{display:none!important}
+ body{background:#fff;color:#000;font-size:12px}main{max-width:none;padding:0}
+ .pH{display:block!important}
+ .c{border:1px solid #999;break-inside:avoid;margin-bottom:10px}
+ table{font-size:11px}
+}
+</style></head><body><main>
+<h1 class="noprint">Bravos Lending</h1>
+<div class="sub noprint">Client portal · check your loan, estimate a new loan, or send us an inquiry</div>
+<div class="tabs"><button id="b1" class="on" onclick="go(1)">My loan</button><button id="b2" onclick="go(2)">Calculator</button><button id="b3" onclick="go(3)">Apply / ask</button></div>
+
+<section id="s1">
+<div class="c noprint"><h2>Check my loan</h2>
+<div class="sub">Enter the private access code we sent you. Your details are encrypted and cannot be seen without it.</div>
+<label>Access code</label><div class="row"><input id="code" placeholder="e.g. K7QM4D2X" autocomplete="off" style="text-transform:uppercase"><button class="p" onclick="look()" style="flex:0 0 auto">View</button></div>
+<div id="err" class="sub" style="color:var(--bad);margin-top:6px"></div></div>
+<div id="out"></div></section>
+
+<section id="s2" style="display:none"><div class="c"><h2>Loan calculator</h2>
+<label>Cash you need (₱)</label><input id="ca" type="number" min="1000" step="500" value="10000">
+<label>Term</label><select id="cm" onchange="calc()"><option value="2">2 months</option><option value="3" selected>3 months</option><option value="4">4 months</option><option value="6">6 months</option><option value="12">12 months</option></select>
+<label>Date of my first payment</label><input id="cf" type="date">
+<label>Show my payment schedule at</label><select id="cr" onchange="calc()"><option value="3">3% per month</option><option value="4">4% per month</option><option value="5">5% per month</option><option value="6" selected>6% per month</option></select>
+<div id="cres" style="margin-top:10px"></div>
+<div class="sub" style="margin-top:8px">Estimate only. Your rate is one of the rates shown (__RLO__% to __RHI__% per month, flat) and depends on the loan amount, the term and your repayment record with us, and is confirmed when your loan is approved. A one-time processing fee is included. Interest is charged per day, so the date of your first payment changes the amount; later payments are every 15 days.</div>
+<div class="sub" style="margin-top:8px"><b>How rates are set:</b> the rates above are the same for everyone, and every client is assessed on the same factors – loan size, term, and repayment record. Returning clients who pay on time may qualify for a preferred rate. Any such offer is personal and appears only in that client's private statement.</div></div></div></section>
+
+<section id="s3" style="display:none"><div class="c"><h2>Apply or ask a question</h2>
+<label>Your name</label><input id="qn"><label>Mobile number</label><input id="qp" inputmode="tel">
+<label>Town / city</label><input id="ql"><label>Amount you need (₱)</label><input id="qa" type="number">
+<label>Preferred term</label><select id="qt"><option>2 months</option><option selected>3 months</option><option>4 months</option><option>6 months</option><option>12 months</option></select>
+<label>Message / purpose</label><textarea id="qm" rows="3"></textarea>
+<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="p" onclick="copyQ()">Copy my inquiry</button><span id="ct"></span></div>
+<div id="cok" class="sub" style="margin-top:8px"></div>
+<div class="sub" style="margin-top:8px">We will reply to the number you provide. Please do not include passwords or bank PINs.</div></div></section>
+
+<div class="sub" style="text-align:center">Bravos Lending · Bohol, Philippines</div>
+</main>
+<script>
+const BL=__BLOBS__,GS="__GS__",ASOF="__ASOF__",RLO=__RLO__,RHI=__RHI__,CONTACT=__CONTACT__,UPLOAD="__UPLOAD__",PAYINFO=__PAYINFO__;
+const P=n=>'₱'+Number(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}),$=i=>document.getElementById(i);
+const E=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function go(n){[1,2,3].forEach(i=>{$('s'+i).style.display=i==n?'block':'none';$('b'+i).className=i==n?'on':''})}
+const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0)),hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+async function look(){
+ const code=$('code').value.toUpperCase().replace(/[^A-Z0-9]/g,'');$('err').textContent='';$('out').innerHTML='';
+ if(code.length<6){$('err').textContent='Please enter your full access code.';return}
+ try{
+  const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(code),'PBKDF2',false,['deriveBits']);
+  const bits=new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',salt:b64(GS),iterations:200000,hash:'SHA-256'},km,384));
+  const bl=BL[hex(bits.slice(0,16))];if(!bl)throw 0;
+  const key=await crypto.subtle.importKey('raw',bits.slice(16),'AES-GCM',false,['decrypt']);
+  const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(bl.i)},key,b64(bl.c));
+  show(JSON.parse(new TextDecoder().decode(pt)));
+ }catch(e){$('err').textContent='Code not recognized. Please check it or contact us.'}}
+function enrich(l){const n=l.n,inst=l.total/n;let due=0;const up=[];for(let k=1;k<=n;k++){const dt=sd(l,k);if(dt<=TD)due++;else up.push(dt)}
+ l.inst=inst;l.out=Math.max(0,l.total-l.paid);const exp=Math.min(l.total,due*inst);l.od=Math.max(0,exp-l.paid);const miss=Math.max(0,due-Math.floor(l.paid/inst+0.02));
+ l.st=l.out<1?'Paid':miss>=2?'Overdue':miss==1?'Watch':'Current';l.up=l.out<1?[]:up.slice(0,2).map(fd);l.nx=up[0]||''}
+// calculator
+const sd=(l,k)=>l.fp?ad(l.fp,15*(k-1)):ad(l.rd,15*k);
+let CUR=[];
+let CLIENT='',UPKEY='',PROOFS=[],PL=[];
+const KL={cash:'Cash released',offset:'Previous loan balance deducted',fee:'Processing fee (included in amount financed)',pay:'Payment received',sum:'Payments recorded (earlier / summary)',rel:'Loan released (amount financed)',closed:'Account closed – fully paid'};
+function ledRows(l){let bal=l.total;return (l.led||[]).map((e,j)=>{const pay=e[1]=='pay'||e[1]=='sum';if(pay)bal-=e[2];return{j,d:e[0],k:e[1],desc:KL[e[1]]+(e[3]?' – '+e[3]:''),a:e[2],b:pay?Math.max(0,bal):null}})}
+function arRows(l){const rows=[];let prev=l.rd,k=0;
+ if(l.oi>0&&(l.led||[]).some(e=>e[1]=='sum')){const s=l.led.find(e=>e[1]=='sum');rows.push({k:'1–'+l.oi,sum:1,paid:s[2],due:s[2],act:1,j:l.led.indexOf(s)});k=l.oi}
+ (l.led||[]).forEach((e,j)=>{if(e[1]!=='pay')return;const pf=e[4]||e[0],cv=e[5]||1;
+  for(let q=0;q<cv&&k<l.n;q++){const days=q?0:Math.max(0,dd(prev,pf)),it=l.daily*days;rows.push({k:++k,from:prev,to:pf,days,pr:l.pp,it,due:l.pp+it,paid:q?null:e[2],rcv:q?'':e[0],j,act:1});prev=pf}});
+ while(k<l.n){k++;const sched=sd(l,k);let to=sched,over=0;if(sched<=TD){over=1;to=TD}if(to<prev)to=prev;const days=Math.max(0,dd(prev,to)),it=l.daily*days;rows.push({k,from:prev,to,days,pr:l.pp,it,due:l.pp+it,paid:null,rcv:'',j:-1,act:0,over});prev=to}
+ let bal=0;rows.forEach(r=>{bal+=(r.due||0)-(r.paid||0);r.bal=bal});return rows}
+function ledHTML(l,i){const R=ledRows(l);if(!R.length)return '';
+ const relR=R.filter(r=>r.k!=='pay'&&r.k!=='sum');
+ const relT=relR.length?`<table style="margin-top:6px"><tr><th>Date</th><th style="text-align:left">Release / adjustments</th><th>Amount</th><th class="noprint"></th></tr>${relR.map(r=>`<tr><td>${r.d?fd(r.d):'—'}</td><td style="text-align:left">${E(r.desc)}</td><td>${r.a?P2(r.a):''}</td><td class="noprint"><button class="fl" onclick="rpt(${i},${r.j})" title="Report a problem with this entry">⚑</button></td></tr>`).join('')}</table><div class="sub">Cash released, previous balances deducted and fees add up to the amount financed.</div>`:'';
+ let ar='';
+ if(!l.lump&&(l.out>=1||l.led.some(e=>e[1]=='pay'))){const A=arRows(l);let td=0,tp=0;
+  ar=`<div style="margin-top:12px"><b>Payment schedule</b> <span class="sub">– same layout as your loan sheet</span></div><div class="sc"><table><tr><th>#</th><th>From</th><th>Payment date</th><th>Days</th><th>Principal</th><th>Interest</th><th>Total payable</th><th>Amount paid</th><th>Received on</th><th>Balance owed</th><th class="noprint"></th></tr>${A.map(r=>{td+=r.due||0;tp+=r.paid||0;const mu=r.act?'':' style="color:var(--mu)"';
+   if(r.sum)return `<tr><td>${r.k}</td><td colspan="5" style="text-align:left">Earlier payments (summary)</td><td>${P2(r.paid)}</td><td>${P2(r.paid)}</td><td></td><td>${P2(r.bal)}</td><td class="noprint"></td></tr>`;
+   return `<tr${mu}><td>${r.k}</td><td>${fd(r.from)}</td><td>${fd(r.to)}${r.over?' <span class="Overdue">overdue</span>':''}</td><td>${r.days}</td><td>${P2(r.pr)}</td><td>${P2(r.it)}</td><td>${P2(r.due)}</td><td>${r.paid!=null?P2(r.paid):'–'}</td><td>${r.rcv?fd(r.rcv):''}</td><td>${P2(r.bal)}</td><td class="noprint">${r.j>=0&&r.paid!=null?`<button class="fl" onclick="rpt(${i},${r.j})" title="Report a problem with this payment">⚑</button>`:''}</td></tr>`}).join('')}<tr><th></th><th></th><th></th><th></th><th></th><th></th><th style="color:var(--tx)">${P2(td)}</th><th style="color:var(--tx)">${P2(tp)}</th><th></th><th style="color:var(--tx)">${P2(td-tp)}</th><th class="noprint"></th></tr></table></div><div class="sub">Grey rows are scheduled, not yet paid. Interest is charged per day, so each amount depends on the payment date; overdue rows show the amount if paid today. "Balance owed" is total payable less amount paid so far; a minus sign means you have paid ahead. Totals for scheduled rows are estimates.</div>`}
+ return `<details class="act"><summary>Full ledger – same layout as your loan sheet</summary>${relT?'<div style="margin-top:8px"><b>How your loan was released</b></div>':''}${relT}${ar}</details>`}
+function proofHist(){if(!PROOFS.length)return '';return `<div style="margin-top:14px"><b>Your submitted proofs</b></div><div class="sc"><table><tr><th>Sent</th><th style="text-align:left">Loan</th><th>Paid on</th><th>Amount</th><th>Status</th></tr>${PROOFS.map(p=>`<tr><td>${p.sub?fd(p.sub):''}</td><td style="text-align:left">${E(p.loan)}</td><td>${p.paid?fd(p.paid):''}</td><td>${P2(p.amt)}</td><td><b class="${p.st=='Verified'?'Current':p.st=='Rejected'?'Overdue':'Watch'}">${E(p.st||'Pending')}</b>${p.note?'<br><span class="sub">'+E(p.note)+'</span>':''}</td></tr>`).join('')}</table></div><div class="sub">Pending = received, being checked. Verified payments appear in your ledger.</div>`}
+function prfHTML(){if(!CUR.length)return '';
+ if(!UPLOAD)return '<div class="c noprint" id="prf"><h2>Paid? Send your proof of payment</h2><div class="sub">Please send a screenshot or photo of your receipt to Bravos Lending with your name, the loan, the date and the amount.</div></div>';
+ const act=CUR.filter(l=>l.out>=1);
+ return `<div class="c noprint" id="prf"><h2>Paid? Attach your proof of payment</h2><div class="sub">Upload a screenshot or photo of your receipt (GCash, bank transfer, remittance or cash receipt). It goes privately to Bravos Lending, who will verify it and update your ledger.</div><label>Loan</label><select id="pfl">${(act.length?act:CUR).map(l=>`<option value="${CUR.indexOf(l)}">${E(l.label)}</option>`).join('')}</select><label>Payment date on the receipt</label><input type="date" id="pfd" value="${TD}"><label>Amount paid (₱)</label><input type="number" id="pfa" min="1" step="0.01"><label>Reference / transaction no.</label><input id="pfr"><label>Note (optional)</label><input id="pfn"><label>Receipt – photo, screenshot or PDF</label><input type="file" id="pff" accept="image/*,application/pdf"><div style="margin-top:10px"><button class="p" id="pfb" onclick="sendProof()">Send proof of payment</button></div><div id="pfm" class="sub" style="margin-top:8px"></div>${proofHist()}</div>`}
+function prefill(i,src){if(!$('pfl'))return;$('pfl').value=i;$('pfd').value=$((src||'pd')+i).value;$('pfa').value=(PL[i]||0).toFixed(2);$('prf').scrollIntoView({behavior:'smooth'})}
+function readFile(f){return new Promise((res,rej)=>{
+ if(f.type==='application/pdf'){if(f.size>3e6)return rej(new Error('PDF is too large (max 3 MB)'));const r=new FileReader();r.onload=()=>res({mime:'application/pdf',data:String(r.result).split(',')[1]});r.onerror=()=>rej(new Error('Could not read the file'));r.readAsDataURL(f);return}
+ if(!/^image\//.test(f.type))return rej(new Error('Please choose a photo, screenshot or PDF'));
+ const img=new Image(),u=URL.createObjectURL(f);img.onload=()=>{const s=Math.min(1,1600/Math.max(img.width,img.height)),cv=document.createElement('canvas');cv.width=Math.round(img.width*s);cv.height=Math.round(img.height*s);cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);const d=cv.toDataURL('image/jpeg',.82);URL.revokeObjectURL(u);res({mime:'image/jpeg',data:d.split(',')[1]})};img.onerror=()=>rej(new Error('Could not read that image'));img.src=u})}
+async function sendProof(){const m=$('pfm'),l=CUR[+$('pfl').value],f=$('pff').files&&$('pff').files[0],amt=+$('pfa').value,dt=$('pfd').value;
+ if(!l||!dt||!(amt>0)||!f){m.textContent='Please choose the loan, date, amount and attach your receipt.';return}
+ $('pfb').disabled=true;m.textContent='Sending…';
+ try{const x=await readFile(f);
+  const r=await fetch(UPLOAD,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({client:CLIENT,upkey:UPKEY,loan:l.label,paidOn:dt,amount:amt,ref:$('pfr').value,note:$('pfn').value,mime:x.mime,data:x.data,filename:f.name})});
+  const j=await r.json();if(!j.ok)throw new Error(j.error||'failed');
+  m.textContent='Sent! Your proof reference is '+j.ref+'. We will verify it and update your ledger.';$('pff').value='';$('pfa').value='';$('pfr').value='';$('pfn').value=''
+ }catch(e){m.textContent='Could not send ('+(e.message||e)+'). Please send your receipt to us by message instead.'}
+ $('pfb').disabled=false}
+function dspHTML(){if(!CUR.length)return '';
+ return `<div class="c" id="dsp"><h2>Something doesn't look right?</h2><div class="sub">If a payment, date, amount or charge in your ledger is wrong or missing, tell us. We will review it with you.</div><label>Loan</label><select id="dl" onchange="dfill()">${CUR.map((l,i)=>`<option value="${i}">${E(l.label)}</option>`).join('')}</select><label>Entry</label><select id="de"></select><label>What is the problem?</label><select id="dt"><option>Amount is wrong</option><option>Date is wrong</option><option>A payment I made is missing</option><option>Charge or fee is wrong</option><option>Other</option></select><label>Details – what should it be?</label><textarea id="dx" rows="3"></textarea><label>Payment reference / receipt no. (if any)</label><input id="dr"><label>My mobile number</label><input id="dm" inputmode="tel"><div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="p" onclick="dcopy()">Prepare my report</button><span id="dct"></span></div><div id="dok" class="sub" style="margin-top:8px"></div><textarea id="dout" rows="8" readonly style="display:none;margin-top:8px"></textarea></div>`}
+function dfill(){const l=CUR[+$('dl').value];if(!l)return;$('de').innerHTML=ledRows(l).map(r=>`<option value="${r.j}">${r.d?fd(r.d):'—'} · ${E(KL[r.k])} ${r.a?P2(r.a):''}</option>`).join('')+'<option value="-1">A payment that is not listed</option>'}
+function rpt(i,j){$('dl').value=i;dfill();$('de').value=j;$('dsp').scrollIntoView({behavior:'smooth'})}
+function dcopy(){const l=CUR[+$('dl').value],j=+$('de').value,r=j>=0?ledRows(l)[j]:null,det=$('dx').value.trim();
+ if(!det){$('dok').textContent='Please describe the problem first.';return}
+ const ref='DSP-'+TD.replace(/-/g,'')+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+ const txt=`Ledger report – Bravos Lending\nReference: ${ref}\nClient: ${CLIENT}\nLoan: ${l.label} (released ${l.date})\nEntry: ${r?(r.d?fd(r.d):'—')+' · '+KL[r.k]+' '+(r.a?P2(r.a):''):'A payment that is not listed'}\nProblem: ${$('dt').value}\nDetails: ${det}\nReceipt / reference no.: ${$('dr').value||'—'}\nMobile: ${$('dm').value||'—'}\nStatement as of: ${ASOF}`;
+ $('dout').style.display='block';$('dout').value=txt;
+ $('dct').innerHTML=CONTACT.map(c=>{let u=c.url;if(c.k=='sms')u+='?body='+encodeURIComponent(txt);if(c.k=='mail')u+='?subject=Ledger%20report&body='+encodeURIComponent(txt);return `<a href="${E(u)}" target="_blank" rel="noopener" style="padding:9px 12px;border:1px solid var(--ln);border-radius:8px;color:var(--tx);text-decoration:none">${E(c.label)}</a>`}).join(' ');
+ const done=()=>{$('dok').textContent='Your report (ref '+ref+') is ready. Copy it and send it to us'+(CONTACT.length?' using a button above.':' by message.')};
+ if(navigator.clipboard)navigator.clipboard.writeText(txt).then(done,done);else done()}
+function csv(){const rows=[['Client','Loan','Date','Entry','Amount','Balance']];CUR.forEach(l=>ledRows(l).forEach(r=>rows.push([CLIENT,l.label,r.d,r.desc,r.a||'',r.b==null?'':r.b.toFixed(2)])));
+ const s=rows.map(r=>r.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(',')).join('\n'),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([s],{type:'text/csv'}));a.download='my-bravos-ledger.csv';a.click()}
+window.addEventListener('beforeprint',()=>document.querySelectorAll('details').forEach(d=>d.open=true));
+function printAll(){document.querySelectorAll('details').forEach(d=>d.open=true);window.print()}
+
+const dd=(a,b)=>Math.round((new Date(b+'T00:00:00Z')-new Date(a+'T00:00:00Z'))/864e5),TD=new Date().toISOString().slice(0,10),
+P2=n=>(n<-0.004?'−':'')+'₱'+Math.abs(Number(n)).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}),
+ad=(s,n)=>{const d=new Date(s+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)},
+fd=s=>new Date(s+'T00:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});
+function snap(l){const A=arRows(l),past=A.filter(r=>(r.act&&!r.sum&&r.to<=TD)||r.over),acts=A.filter(r=>r.act),lastAct=acts[acts.length-1],carry0=lastAct?lastAct.bal:0,carry=Math.abs(carry0)<5?0:carry0,over=A.filter(r=>r.over),
+ dueNow0=past.length?Math.max(0,past[past.length-1].bal):0,dueNow=dueNow0<5?0:dueNow0,prev=past.length?Math.min(0,past[past.length-1].bal):0,nxt=A.find(r=>!r.act&&!r.over),credit=Math.max(0,-carry);
+ return{A,carry,over,dueNow,nxt,credit,nextAmt:nxt?Math.max(0,nxt.due+prev):0}}
+function plan(l,i){
+ if(l.out<1)return '';
+ if(l.lump)return '<div class="sub" style="margin-top:8px">To settle this account, please contact us for the exact amount.</div>';
+ const S=snap(l),rem=l.n-l.pi,def=S.dueNow>1?TD:(S.nxt?S.nxt.to:TD),dk=Math.min(Math.max(1,S.over.length),Math.min(rem,6));let o='';for(let k=1;k<=Math.min(rem,6);k++)o+=`<option value="${k}"${k==dk?' selected':''}>${k} payment${k>1?'s':''}</option>`;
+ return `<details class="act noprint"${S.dueNow>1?' open':''}><summary>Plan your payment – pick a date and see the exact amount</summary><div style="padding:10px;border:1px solid var(--ln);border-top:0;border-radius:0 0 8px 8px"><div class="sub">Interest is charged per day, so paying earlier costs a little less and paying later costs a little more.</div><div class="row"><div><label>When will you pay?</label><input type="date" id="pd${i}" value="${def}" min="${TD}" onchange="pay(${i})"></div><div><label>How many payments?</label><select id="pk${i}" onchange="pay(${i})">${o}</select></div></div><div id="pr${i}" style="margin-top:8px"></div></div></details>`}
+function pay(i){const l=CUR[i],S=snap(l),D=$('pd'+i).value,k=+$('pk'+i).value;if(!D)return;
+ const days=Math.max(0,dd(l.an,D)),pr=k*l.pp,it=l.daily*days,adj=S.carry,tt=Math.max(0,pr+it+adj);
+ $('pr'+i).innerHTML=`<div class="r"><span>Loan part (${k} payment${k>1?'s':''})</span><b>${P2(pr)}</b></div><div class="r"><span>Interest for ${days} day${days==1?'':'s'} (${fd(l.an)} to ${fd(D)})</span><b>${P2(it)}</b></div>${Math.abs(adj)>0.5?`<div class="r"><span>${adj<0?'Less: you paid ahead earlier':'Plus: earlier shortfall'}</span><b>${P2(adj)}</b></div>`:''}<div class="r"><span><b>To pay on ${fd(D)}</b></span><b class="big">${P2(tt)}</b></div><div class="sub">Based on payments recorded up to ${E(ASOF)}. If you paid after that, or the figure looks different from yours, tell us – we will confirm the final amount.</div><button onclick="prefill(${i},'pd')" style="margin-top:8px">I paid this – attach my proof</button>`;PL[i]=tt}
+function payoffHTML(l,i){
+ if(l.out<1||l.lump)return '';
+ const S=snap(l),nx=S.nxt?S.nxt.to:ad(TD,15);
+ return `<details class="act noprint"><summary>Pay everything now – see the amount to close this loan early</summary><div style="padding:10px;border:1px solid var(--ln);border-top:0;border-radius:0 0 8px 8px"><div class="sub">You only pay the unpaid loan amount plus interest up to the day you pay – no interest for the days after.</div><label>Date I will pay everything</label><input type="date" id="po${i}" value="${TD}" min="${TD}" onchange="payoff(${i})"><div class="chips"><button onclick="setPo(${i},'${TD}')">Today</button><button onclick="setPo(${i},'${ad(TD,7)}')">In 7 days</button><button onclick="setPo(${i},'${nx}')">On my next due date</button></div><div id="pq${i}" style="margin-top:8px"></div></div></details>`}
+function setPo(i,d){$('po'+i).value=d;payoff(i)}
+function payoff(i){const l=CUR[i],S=snap(l),D=$('po'+i).value;if(!D)return;
+ const rem=l.n-l.pi,days=Math.max(0,dd(l.an,D)),pr=rem*l.pp,it=l.daily*days,adj=S.carry,tot=Math.max(0,pr+it+adj),keep=S.A.length?S.A[S.A.length-1].bal:tot,save=Math.max(0,keep-tot);
+ $('pq'+i).innerHTML=`<div class="r"><span>Unpaid loan amount (${rem} payment${rem>1?'s':''} left)</span><b>${P2(pr)}</b></div><div class="r"><span>Interest for ${days} day${days==1?'':'s'} (${fd(l.an)} to ${fd(D)})</span><b>${P2(it)}</b></div>${Math.abs(adj)>0.5?`<div class="r"><span>${adj<0?'Less: you paid ahead earlier':'Plus: earlier shortfall'}</span><b>${P2(adj)}</b></div>`:''}<div class="r"><span><b>Pay everything on ${fd(D)}</b></span><b class="big">${P2(tot)}</b></div>${save>0.5?`<div class="nb"><b>You save about ${P2(save)}</b><div class="sub">compared with paying the remaining scheduled payments (${P2(keep)}).</div></div>`:''}<div class="sub">Based on payments recorded up to ${E(ASOF)}. We will confirm the final amount before you pay.</div><button onclick="PL[${i}]=${tot.toFixed(2)};prefill(${i},'po')" style="margin-top:8px">I paid this – attach my proof</button>`;PL[i]=tot}
+function payList(l,i){let k=l.oi||0;const rows=[];
+ (l.led||[]).forEach((e,j)=>{if(e[1]=='pay'){const cv=e[5]||1,a=k+1,b=k+cv;k=b;rows.push({j,d:e[0],f:a==b?'Payment #'+a:'Payments #'+a+'–'+b,due:e[4]||e[0],a:e[2]})}else if(e[1]=='sum'&&!l.lump)rows.push({j,d:'',f:'Earlier payments (summary)',due:'',a:e[2]})});
+ const pend=PROOFS.filter(p=>p.loan===l.label&&(p.st||'Pending')==='Pending');
+ if(!rows.length&&!pend.length)return '<div class="sub">No payments recorded yet.</div>';
+ return `<table class="pl"><tr><th>Date received</th><th style="text-align:left">What it paid</th><th>Amount</th><th class="noprint"></th></tr>${pend.map(p=>`<tr><td>${p.sub?fd(p.sub):''}</td><td style="text-align:left">⏳ Proof received – we are checking it</td><td>${P2(p.amt)}</td><td class="noprint"></td></tr>`).join('')}${rows.reverse().map(r=>`<tr><td>${r.d?fd(r.d):'—'}</td><td style="text-align:left">✓ ${E(r.f)}${r.due?'<br><span class="sub">for the '+fd(r.due)+' due date</span>':''}</td><td>${P2(r.a)}</td><td class="noprint"><button class="fl" onclick="rpt(${i},${r.j})" title="Report a problem with this payment">⚑</button></td></tr>`).join('')}</table>`}
+function loanCard(l,i){const S=l.out<1?null:snap(l),pct=Math.min(100,Math.round(l.paid/l.total*100)),stT={Paid:'Fully paid ✓',Current:'On track ✓',Watch:'Payment due',Overdue:'Overdue'}[l.st];
+ let nb;
+ if(!S)nb=`<div class="nb"><b>All paid – thank you!</b><div class="sub">This loan is fully paid.</div></div>`;
+ else nb=`<div class="nb${S.dueNow>1?' od':''}">${S.dueNow>1?`<div class="Overdue"><b>Due now: ${P2(S.dueNow)}</b></div><div class="sub">This is the amount to pay today. Interest adds a little each day until you pay.</div>`:''}${S.nxt?`<div${S.dueNow>1?' style="margin-top:8px"':''}><b>Next regular payment: ${P2(S.nextAmt)}</b> on <b>${fd(S.nxt.to)}</b></div>`:''}${S.credit>0.5?`<div class="sub">You have paid ${P2(S.credit)} ahead of schedule, which is already counted above.</div>`:''}</div>`;
+ return `<div class="c"><h2>${E(l.label)} <span class="b ${l.st}">${stT}</span></h2><div class="sub">Loan released ${E(l.date)} · ${l.months} months · ${E(l.rate)}% interest per month, charged per day</div>${l.note?`<div class="sub" style="margin-top:4px">${E(l.note)}</div>`:''}
+ <div class="bar"><i style="width:${pct}%"></i></div><div class="sub">You have paid ${P(l.paid)} of ${P(l.total)} (${pct}%)</div>${nb}
+ <div class="kgrid"><div class="kg"><span>You borrowed</span><b>${P(l.fin)}</b><small>loan + processing fee</small></div><div class="kg"><span>Total to pay back</span><b>${P(l.total)}</b><small>loan + interest</small></div><div class="kg"><span>Paid so far</span><b>${P(l.paid)}</b></div><div class="kg"><span>Still to pay</span><b>${P(l.out)}</b><small>if you pay on schedule</small></div></div>
+ ${plan(l,i)}${payoffHTML(l,i)}
+ <div style="margin-top:12px"><b>Your payments</b></div>${payList(l,i)}
+ ${ledHTML(l,i)}</div>`}
+function show(d){d.loans.forEach(enrich);CUR=d.loans;CLIENT=d.name;UPKEY=d.upkey||'';PROOFS=d.proofs||[];
+ const act=CUR.map((l,i)=>({l,i})).filter(x=>x.l.out>=1&&!x.l.lump).map(x=>({l:x.l,S:snap(x.l)})),dueNow=act.reduce((t,x)=>t+x.S.dueNow,0),nx=act.filter(x=>x.S.nxt).sort((a,b)=>a.S.nxt.to.localeCompare(b.S.nxt.to)),n0=nx[0],nAmt=n0?nx.filter(x=>x.S.nxt.to===n0.S.nxt.to).reduce((t,x)=>t+x.S.nextAmt,0):0,tOut=CUR.reduce((t,l)=>t+l.out,0),tPaid=CUR.reduce((t,l)=>t+l.paid,0);
+ let h=`<div class="pH" style="border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:12px"><div style="font-size:22px;font-weight:700">Bravos Lending</div><div>Statement of account – <b>${E(d.name)}</b></div><div>Statement as of ${E(ASOF)} · Bohol, Philippines</div></div>
+<div class="c"><h2>Hello, ${E(d.name)} 👋</h2><div class="sub">Here is your account at a glance. Updated through ${E(ASOF)} – payments made after that may not show yet.</div>
+<div class="kgrid"><div class="kg"><span>Due now</span><b class="${dueNow>1?'Overdue':'Current'}">${dueNow>1?P2(dueNow):'Nothing 🎉'}</b></div><div class="kg"><span>Next payment</span><b>${n0?P2(nAmt):'—'}</b><small>${n0?'on '+fd(n0.S.nxt.to):'no payment pending'}</small></div><div class="kg"><span>Still to pay</span><b>${P(tOut)}</b></div><div class="kg"><span>Paid so far</span><b>${P(tPaid)}</b></div></div>
+<div class="noprint" style="margin-top:8px"><button onclick="csv()">Download my ledger</button> <button onclick="printAll()" style="margin-left:6px">Print my statement</button></div></div>
+<details class="c noprint"><summary><b>How to read this page</b></summary><div class="sub" style="line-height:1.7;margin-top:8px"><b>You borrowed</b> – the loan amount plus the one-time processing fee.<br><b>Total to pay back</b> – what you repay in total: the loan plus interest.<br><b>Interest is charged per day.</b> Each payment includes interest for the days since your last payment, so paying on the agreed date keeps it fair, paying earlier costs a little less, and paying late costs a little more.<br><b>Payment #1, #2…</b> – your payments are every 15 days. The "due date" is the date we agreed on for that payment.<br><b>Paid ahead</b> – if you paid more than a payment's amount, the extra counts toward your next payments.<br><b>Pay everything now</b> – you can close a loan early. You only pay the unpaid loan amount plus interest up to that day.<br><b>Something looks wrong?</b> Tap ⚑ next to a payment, or use "Report a problem" at the bottom.</div></details>`;
+ if(PAYINFO)h+=`<div class="c noprint"><h2>How to pay</h2><div style="white-space:pre-line">${E(PAYINFO)}</div></div>`;
+ CUR.forEach((l,i)=>{h+=loanCard(l,i)});
+ h+=offerCard(d.offer);h+=prfHTML();h+=dspHTML();h+=`<div class="pH sub" style="margin-top:10px">This statement shows payments recorded up to ${E(ASOF)}. If you find an error or a missing payment, please report it to Bravos Lending with the date, amount and your receipt or reference number.</div><div class="c sub noprint">Questions? Contact us and mention your name.</div>`;
+ $('out').innerHTML=h;CUR.forEach((l,i)=>{if($('pd'+i))pay(i);if($('po'+i))payoff(i)});oc();if($('dl'))dfill()}
+const fee=c=>c<5000?75:c<10000?120:150,addD=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+function sched(c,m,cf,rate){const f=fee(c),fin=c+f,n=m*2,pp=fin/n,dy=fin*rate/100/30,d1=Math.max(1,dd(TD,cf)),rows=[];let tot=0;
+ for(let k=1;k<=n;k++){const amt=pp+dy*(k==1?d1:15);rows.push([k==1?cf:ad(cf,15*(k-1)),amt]);tot+=amt}return{f,fin,tot,rows,d1,rate}}
+const RATES=[3,4,5,6];
+function calc(){const c=+$('ca').value||0,m=+$('cm').value;if(!$('cf').value)$('cf').value=ad(TD,15);const cf=$('cf').value,S=RATES.map(r=>sched(c,m,cf,r)),i=Math.max(0,RATES.indexOf(+$('cr').value)),sc=S[i];
+ $('cres').innerHTML=c<500?'':`<div class="r"><span>Cash you receive</span><b>${P(c)}</b></div><div class="r"><span>Processing fee</span><b>${P(S[0].f)}</b></div><div class="r"><span>Amount financed</span><b>${P(S[0].fin)}</b></div><div class="sc" style="margin-top:8px"><table><tr><th>Rate / month</th><th>Total interest</th><th>Total to repay</th><th>1st payment</th><th>Then every 15 days</th></tr>${S.map((s,j)=>`<tr><td><b>${RATES[j]}%</b></td><td>${P(s.tot-s.fin)}</td><td>${P(s.tot)}</td><td>${P2(s.rows[0][1])}</td><td>${P2(s.rows[1][1])}</td></tr>`).join('')}</table></div><div class="sub" style="margin-top:6px">The first payment includes ${S[0].d1} days of interest from release to your first payment date.</div><div class="sc" style="margin-top:10px"><b>Schedule at ${sc.rate}%</b><table><tr><th>#</th><th>Due</th><th>Amount</th></tr>${sc.rows.map((r,k)=>`<tr><td>${k+1}</td><td>${fd(r[0])}</td><td>${P2(r[1])}</td></tr>`).join('')}</table></div>`}
+let OF=null;
+function offerCard(o){
+ if(!o)return '';OF=o;const exp=o.until&&o.until<TD;
+ return `<div class="c noprint"><h2>Your renewal offer</h2><div class="sub">Personal to you${o.until?' · valid until '+E(fd(o.until)):''}. ${exp?'This offer has expired – please contact us.':'Based on: '+E(o.reason||'your repayment record')+'.'}</div><div class="r"><span>Your rate</span><b>${E(o.rate)}% per month</b></div>${exp?'':`<label>Amount I need (₱)</label><input id="oa" type="number" min="1000" step="500" value="10000" oninput="oc()"><label>Term</label><select id="om" onchange="oc()"><option value="2">2 months</option><option value="3" selected>3 months</option><option value="4">4 months</option><option value="6">6 months</option><option value="12">12 months</option></select><label>Date of my first payment</label><input id="of" type="date" onchange="oc()"><div id="ores" style="margin-top:8px"></div><div class="sub" style="margin-top:6px">Any unpaid balance on your current loan is deducted from the cash released. Ask us for the exact figure.</div>`}</div>`}
+function oc(){if(!OF||!$('oa'))return;const c=+$('oa').value||0,m=+$('om').value;if(!$('of').value)$('of').value=ad(TD,15);const s=sched(c,m,$('of').value,OF.rate);
+ $('ores').innerHTML=c<500?'':`<div class="r"><span>Processing fee</span><b>${P(s.f)}</b></div><div class="r"><span>Amount financed</span><b>${P(s.fin)}</b></div><div class="r"><span>Total interest</span><b>${P(s.tot-s.fin)}</b></div><div class="r"><span>Total to repay</span><b>${P(s.tot)}</b></div><div class="r"><span>First payment</span><b>${P2(s.rows[0][1])}</b></div><div class="sc" style="margin-top:8px"><table><tr><th>#</th><th>Due</th><th>Amount</th></tr>${s.rows.map((r,i)=>`<tr><td>${i+1}</td><td>${fd(r[0])}</td><td>${P2(r[1])}</td></tr>`).join('')}</table></div>`}
+$('ca').oninput=calc;$('cf').oninput=calc;calc();
+// inquiry
+function msg(){return `Loan inquiry – Bravos Lending\nName: ${$('qn').value}\nMobile: ${$('qp').value}\nLocation: ${$('ql').value}\nAmount: ${$('qa').value?P($('qa').value):''}\nTerm: ${$('qt').value}\nMessage: ${$('qm').value}`}
+async function copyQ(){if(!$('qn').value||!$('qp').value){$('cok').textContent='Please add your name and mobile number.';return}
+ try{await navigator.clipboard.writeText(msg());$('cok').textContent='Copied! Paste it in a message to us'+(CONTACT.length?' using a button above.':'.')}catch(e){$('cok').textContent='Copy failed – please select and copy manually.'}}
+$('ct').innerHTML=CONTACT.map(c=>`<a href="${E(c.url)}" target="_blank" rel="noopener" style="padding:9px 12px;border:1px solid var(--ln);border-radius:8px;color:var(--tx);text-decoration:none" onclick="return pre(this,'${E(c.k)}')">${E(c.label)}</a>`).join(' ');
+function pre(a,k){if(k=='sms'||k=='mail'){a.href=a.href.split('?')[0]+(k=='sms'?'?body=':'?subject=Loan%20inquiry&body=')+encodeURIComponent(msg())}return true}
+</script></body></html>
